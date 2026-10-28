@@ -1,9 +1,11 @@
 /**
- * Rusookh - 1:1 Exact Vanilla JS Conversion of the original repository
- * Color Theme: Pure Electric Sapphire Blue (أزرق ملكي كهربائي ناصع بدون أي تدرجات بنفسجية)
+ * Rusookh - 1:1 Exact Vanilla JS Conversion of https://rusookh.vercel.app/
+ * Implements the exact Three.js MeshDistortMaterial vertex shader,
+ * the exact night HDRI environment reflections (dikhololo_night_1k.hdr),
+ * and the exact Blueberry sphere and particle system.
  */
 
-// --- 1. EXACT I18N DICTIONARY FROM src/lib/i18n.tsx ---
+// --- 1. EXACT I18N DICTIONARY ---
 const t = {
   nav_about: { en: "About", ar: "من نحن" },
   nav_services: { en: "Services", ar: "الخدمات" },
@@ -119,7 +121,7 @@ function setLanguage(lang) {
   }
 }
 
-// --- 2. EXACT CURSOR GLOW (Electric Pure Blue) ---
+// --- 2. EXACT CURSOR GLOW ---
 const cursorGlow = document.getElementById("cursor-glow");
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
@@ -157,7 +159,7 @@ const revealObserver = new IntersectionObserver(
 
 document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
 
-// --- 4. 3D BLUE ORB (Pure Sapphire Electric Blue) ---
+// --- 4. 1:1 EXACT THREE.JS ORB WITH DREI MESH-DISTORT SHADER & NIGHT HDRI ---
 function initOrb() {
   const container = document.getElementById("orb-container");
   if (!container || typeof THREE === "undefined") return;
@@ -174,79 +176,92 @@ function initOrb() {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
   container.appendChild(renderer.domElement);
 
-  // Pure Blue & Cyan Point Lights
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+  // Exact Lights from Orb.tsx:
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
   scene.add(ambientLight);
 
-  const light1 = new THREE.PointLight(0x2563eb, 2.4, 50); // Royal Electric Blue
+  const light1 = new THREE.PointLight(0x6366f1, 2, 50);
   light1.position.set(5, 5, 5);
   scene.add(light1);
 
-  const light2 = new THREE.PointLight(0x38bdf8, 2.0, 50); // Sky Cyan Blue
+  const light2 = new THREE.PointLight(0x22d3ee, 1.5, 50);
   light2.position.set(-5, -3, 2);
   scene.add(light2);
 
-  const light3 = new THREE.PointLight(0x0284c7, 1.4, 50); // Deep Azure Blue
+  const light3 = new THREE.PointLight(0xa855f7, 1, 50);
   light3.position.set(0, -5, 4);
   scene.add(light3);
+
+  // Load exact "night" environment HDRI matching <Environment preset="night" />
+  if (THREE.RGBELoader) {
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+
+    new THREE.RGBELoader().load('assets/dikhololo_night_1k.hdr', (texture) => {
+      const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+      scene.environment = envMap;
+      texture.dispose();
+      pmremGenerator.dispose();
+    });
+  }
 
   const floatGroup = new THREE.Group();
   scene.add(floatGroup);
 
-  // Simplex 3D Noise GLSL for MeshDistortMaterial
+  // Exact GLSL Simplex Noise function used in Drei's MeshDistortMaterial
   const simplexNoiseGLSL = `
-    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-    vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-    vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+    #define GLSLIFY 1
+    vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+    vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+    vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+    vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
 
-    float snoise(vec3 v) {
-      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-      vec3 i = floor(v + dot(v, C.yyy));
-      vec3 x0 = v - i + dot(i, C.xxx);
-      vec3 g = step(x0.yzx, x0.xyz);
-      vec3 l = 1.0 - g;
-      vec3 i1 = min(g.xyz, l.zxy);
-      vec3 i2 = max(g.xyz, l.zxy);
-      vec3 x1 = x0 - i1 + C.xxx;
-      vec3 x2 = x0 - i2 + C.yyy;
-      vec3 x3 = x0 - D.yyy;
-      i = mod289(i);
-      vec4 p = permute(permute(permute(
-                 i.z + vec4(0.0, i1.z, i2.z, 1.0))
-               + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-               + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-      float n_ = 0.142857142857;
-      vec3 ns = n_ * D.wyz - D.xzx;
-      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-      vec4 x_ = floor(j * ns.z);
-      vec4 y_ = floor(j - 7.0 * x_);
-      vec4 x = x_ * ns.x + ns.yyyy;
-      vec4 y = y_ * ns.x + ns.yyyy;
-      vec4 h = 1.0 - abs(x) - abs(y);
-      vec4 b0 = vec4(x.xy, y.xy);
-      vec4 b1 = vec4(x.zw, y.zw);
-      vec4 s0 = floor(b0)*2.0 + 1.0;
-      vec4 s1 = floor(b1)*2.0 + 1.0;
-      vec4 sh = -step(h, vec4(0.0));
-      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-      vec3 p0 = vec3(a0.xy, h.x);
-      vec3 p1 = vec3(a0.zw, h.y);
-      vec3 p2 = vec3(a1.xy, h.z);
-      vec3 p3 = vec3(a1.zw, h.w);
-      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-      p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
-      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-      m = m * m;
-      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+    float snoise(vec3 v){
+      const vec2 C=vec2(1.0/6.0,1.0/3.0);
+      const vec4 D=vec4(0.0,0.5,1.0,2.0);
+      vec3 i=floor(v+dot(v,C.yyy));
+      vec3 x0=v-i+dot(i,C.xxx);
+      vec3 g=step(x0.yzx,x0.xyz);
+      vec3 l=1.0-g;
+      vec3 i1=min(g.xyz,l.zxy);
+      vec3 i2=max(g.xyz,l.zxy);
+      vec3 x1=x0-i1+C.xxx;
+      vec3 x2=x0-i2+C.yyy;
+      vec3 x3=x0-D.yyy;
+      i=mod289(i);
+      vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+      float n_=0.142857142857;
+      vec3 ns=n_*D.wyz-D.xzx;
+      vec4 j=p-49.0*floor(p*ns.z*ns.z);
+      vec4 x_=floor(j*ns.z);
+      vec4 y_=floor(j-7.0*x_);
+      vec4 x=x_*ns.x+ns.yyyy;
+      vec4 y=y_*ns.x+ns.yyyy;
+      vec4 h=1.0-abs(x)-abs(y);
+      vec4 b0=vec4(x.xy,y.xy);
+      vec4 b1=vec4(x.zw,y.zw);
+      vec4 s0=floor(b0)*2.0+1.0;
+      vec4 s1=floor(b1)*2.0+1.0;
+      vec4 sh=-step(h,vec4(0.0));
+      vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;
+      vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+      vec3 p0=vec3(a0.xy,h.x);
+      vec3 p1=vec3(a0.zw,h.y);
+      vec3 p2=vec3(a1.xy,h.z);
+      vec3 p3=vec3(a1.zw,h.w);
+      vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+      p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;
+      vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);
+      m=m*m;
+      return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
     }
   `;
 
-  // Sphere: args [1.4, 128, 128]
+  // Exact Blueberry Sphere Geometry: args [1.4, 128, 128]
   const sphereGeom = new THREE.SphereGeometry(1.4, 128, 128);
 
   const distortUniforms = {
@@ -256,17 +271,20 @@ function initOrb() {
     radius: { value: 1.0 }
   };
 
-  // Pure Vibrant Electric Blue Material (Zero Purple)
+  // Exact Material attributes from Orb.tsx:
+  // color: "#3a3aa8", emissive: "#1e1b6e", emissiveIntensity: 0.6,
+  // roughness: 0.15, metalness: 0.6, clearcoat: 1
   const sphereMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color("#1d4ed8"),        // Vibrant Electric Blue
-    emissive: new THREE.Color("#0c2340"),     // Deep Oceanic Glow
-    emissiveIntensity: 0.7,
-    roughness: 0.12,
-    metalness: 0.65,
+    color: new THREE.Color("#3a3aa8"),
+    emissive: new THREE.Color("#1e1b6e"),
+    emissiveIntensity: 0.6,
+    roughness: 0.15,
+    metalness: 0.6,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.08
+    clearcoatRoughness: 0.05
   });
 
+  // Exact Drei vertex shader injection
   sphereMat.onBeforeCompile = (shader) => {
     shader.uniforms.time = distortUniforms.time;
     shader.uniforms.distort = distortUniforms.distort;
@@ -275,9 +293,8 @@ function initOrb() {
 
     shader.vertexShader = `
       uniform float time;
-      uniform float distort;
-      uniform float speed;
       uniform float radius;
+      uniform float distort;
       ${simplexNoiseGLSL}
       ${shader.vertexShader}
     `;
@@ -285,9 +302,9 @@ function initOrb() {
     shader.vertexShader = shader.vertexShader.replace(
       '#include <begin_vertex>',
       `
-      #include <begin_vertex>
-      float updateTime = time * speed;
-      transformed += normal * snoise(vec3(position * radius + updateTime)) * distort;
+      float updateTime = time / 50.0;
+      float noise = snoise(vec3(position / 2.0 + updateTime * 5.0));
+      vec3 transformed = vec3(position * (noise * pow(distort, 2.0) + radius));
       `
     );
   };
@@ -295,17 +312,17 @@ function initOrb() {
   const blueberryMesh = new THREE.Mesh(sphereGeom, sphereMat);
   floatGroup.add(blueberryMesh);
 
-  // Inner Cyan Blue Glow Core: args [1.05, 32, 32]
+  // Exact Inner Glow Core: args [1.05, 32, 32], color: "#6366f1", opacity: 0.08
   const innerGeom = new THREE.SphereGeometry(1.05, 32, 32);
   const innerMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#38bdf8"),
+    color: new THREE.Color("#6366f1"),
     transparent: true,
-    opacity: 0.1
+    opacity: 0.08
   });
   const innerMesh = new THREE.Mesh(innerGeom, innerMat);
   floatGroup.add(innerMesh);
 
-  // Particles: Ice Blue points
+  // Exact Particles: 600 points, r = 3 + Math.random() * 4, color "#a5b4fc", opacity 0.7, size 0.025
   const particleCount = 600;
   const particlePositions = new Float32Array(particleCount * 3);
   for (let i = 0; i < particleCount; i++) {
@@ -320,9 +337,9 @@ function initOrb() {
   particleGeom.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
   const particleMat = new THREE.PointsMaterial({
     size: 0.025,
-    color: new THREE.Color("#93c5fd"), // Starlight Ice Blue
+    color: new THREE.Color("#a5b4fc"),
     transparent: true,
-    opacity: 0.75,
+    opacity: 0.7,
     sizeAttenuation: true
   });
   const particles = new THREE.Points(particleGeom, particleMat);
@@ -356,22 +373,35 @@ function initOrb() {
     const dt = clock.getDelta();
     const elapsedTime = clock.getElapsedTime();
 
+    // Exact Float: speed 1.2, floatIntensity 1.2, rotationIntensity 0.4
     floatGroup.position.y = Math.sin(elapsedTime * 1.2) * 0.12;
     floatGroup.rotation.z = Math.sin(elapsedTime * 0.6) * 0.04;
 
+    // Exact Mouse rotation from useFrame:
+    // mouse.current.x += (m.x - mouse.current.x) * 0.05
+    // mouse.current.y += (m.y - mouse.current.y) * 0.05
+    // ref.current.rotation.y += dt * 0.15 + mouse.current.x * dt * 0.6
+    // ref.current.rotation.x = mouse.current.y * 0.4
     mouseSmooth.x += (mouseState.x - mouseSmooth.x) * 0.05;
     mouseSmooth.y += (mouseState.y - mouseSmooth.y) * 0.05;
 
     blueberryMesh.rotation.y += dt * 0.15 + mouseSmooth.x * dt * 0.6;
     blueberryMesh.rotation.x = mouseSmooth.y * 0.4;
 
+    // Exact scale oscillation: 1 + Math.sin(elapsedTime * 0.8) * 0.03
     const s = 1 + Math.sin(elapsedTime * 0.8) * 0.03;
     blueberryMesh.scale.set(s, s, s);
 
-    distortUniforms.distort.value = 0.35 + scrollProgress * 0.5 + Math.sin(elapsedTime) * 0.05;
-    distortUniforms.speed.value = 1.5 + scrollProgress * 3;
-    distortUniforms.time.value = elapsedTime;
+    // Exact distort and speed dynamic formula from useFrame:
+    // mat.current.distort = 0.35 + scroll.v * 0.5 + Math.sin(elapsedTime) * 0.05
+    // mat.current.speed = 1.5 + scroll.v * 3
+    const dynamicSpeed = 1.5 + scrollProgress * 3;
+    const dynamicDistort = 0.35 + scrollProgress * 0.5 + Math.sin(elapsedTime) * 0.05;
 
+    distortUniforms.distort.value = dynamicDistort;
+    distortUniforms.time.value += dt * dynamicSpeed * 2.0;
+
+    // Particles rotation: dt * 0.02
     particles.rotation.y += dt * 0.02;
 
     renderer.render(scene, camera);
