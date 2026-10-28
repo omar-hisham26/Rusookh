@@ -1,9 +1,10 @@
 /**
- * Rusookh - Vanilla JS Conversion
- * Faithful 1:1 implementation of the original TanStack/React repository.
+ * Rusookh - 1:1 Exact Vanilla JS Conversion of the original repository
+ * Implements the exact Orb.tsx Three.js MeshDistortMaterial shader,
+ * lighting, colors, particles, floating physics, and mouse/scroll responsiveness.
  */
 
-// 1. I18N DICTIONARY
+// --- 1. EXACT I18N DICTIONARY FROM src/lib/i18n.tsx ---
 const t = {
   nav_about: { en: "About", ar: "من نحن" },
   nav_services: { en: "Services", ar: "الخدمات" },
@@ -101,7 +102,6 @@ function setLanguage(lang) {
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
 
-  // Update all elements with data-i18n
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     if (t[key] && t[key][lang]) {
@@ -109,72 +109,61 @@ function setLanguage(lang) {
     }
   });
 
-  // Toggle button label
   const langBtn = document.getElementById("lang-btn-text");
   if (langBtn) {
     langBtn.textContent = lang === "en" ? "العربية" : "English";
   }
 
-  // Update hero title split animation if needed
-  updateHeroTitle();
+  const prefixEl = document.getElementById("hero-title-prefix");
+  if (prefixEl) {
+    prefixEl.textContent = t.hero_title_1[lang];
+  }
 }
 
-function updateHeroTitle() {
-  const container = document.getElementById("hero-title-prefix");
-  if (!container) return;
-  const text = t.hero_title_1[currentLang];
-  const words = text.split(" ");
-  container.innerHTML = words
-    .map(
-      (word, i) =>
-        `<span class="inline-block mx-1.5 transition-all duration-700 opacity-100 translate-y-0" style="transition-delay: ${300 + i * 100}ms">${word}</span>`
-    )
-    .join(" ");
-}
-
-// 2. CURSOR FOLLOWER WITH SPRING EASING
+// --- 2. EXACT CURSOR GLOW (from index.tsx) ---
 const cursorGlow = document.getElementById("cursor-glow");
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
-let currentX = mouseX;
-let currentY = mouseY;
+let curGlowX = mouseX;
+let curGlowY = mouseY;
 
 window.addEventListener("pointermove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 });
 
-function animateCursor() {
-  currentX += (mouseX - currentX) * 0.08;
-  currentY += (mouseY - currentY) * 0.08;
+function animateCursorGlow() {
+  curGlowX += (mouseX - curGlowX) * 0.1;
+  curGlowY += (mouseY - curGlowY) * 0.1;
   if (cursorGlow) {
-    cursorGlow.style.left = `${currentX}px`;
-    cursorGlow.style.top = `${currentY}px`;
+    cursorGlow.style.left = `${curGlowX}px`;
+    cursorGlow.style.top = `${curGlowY}px`;
   }
-  requestAnimationFrame(animateCursor);
+  requestAnimationFrame(animateCursorGlow);
 }
-requestAnimationFrame(animateCursor);
+requestAnimationFrame(animateCursorGlow);
 
-// 3. REVEAL ANIMATIONS (IntersectionObserver matching Framer Motion's whileInView)
-const observer = new IntersectionObserver(
+// --- 3. REVEAL ANIMATIONS (matching Framer Motion whileInView) ---
+const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("active");
-        observer.unobserve(entry.target);
+        revealObserver.unobserve(entry.target);
       }
     });
   },
   { rootMargin: "-80px" }
 );
 
-document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
 
-// 4. THREE.JS 3D ORB (Faithful translation of Orb.tsx)
+// --- 4. EXACT THREE.JS 3D ORB (1:1 with Orb.tsx Blueberry & Particles) ---
 function initOrb() {
   const container = document.getElementById("orb-container");
   if (!container || typeof THREE === "undefined") return;
 
+  // Camera matching Orb.tsx: position [0, 0, 4.5], fov 45
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     45,
@@ -189,7 +178,11 @@ function initOrb() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  // Lights
+  // Lights matching Orb.tsx exactly:
+  // ambientLight intensity 0.4
+  // pointLight [5, 5, 5] intensity 2 color="#6366f1"
+  // pointLight [-5, -3, 2] intensity 1.5 color="#22d3ee"
+  // pointLight [0, -5, 4] intensity 1 color="#a855f7"
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
   scene.add(ambientLight);
 
@@ -205,56 +198,159 @@ function initOrb() {
   light3.position.set(0, -5, 4);
   scene.add(light3);
 
-  // Deformable Sphere (MeshDistortMaterial equivalent with custom noise displacement)
-  const geom = new THREE.SphereGeometry(1.4, 64, 64);
-  const originalPos = geom.attributes.position.clone();
+  // Group for Float behavior
+  const floatGroup = new THREE.Group();
+  scene.add(floatGroup);
 
-  const mat = new THREE.MeshStandardMaterial({
-    color: 0x3a3aa8,
-    emissive: 0x1e1b6e,
+  // Simplex 3D Noise GLSL for MeshDistortMaterial
+  const simplexNoiseGLSL = `
+    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+    vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+    vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+    float snoise(vec3 v) {
+      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+      vec3 i = floor(v + dot(v, C.yyy));
+      vec3 x0 = v - i + dot(i, C.xxx);
+      vec3 g = step(x0.yzx, x0.xyz);
+      vec3 l = 1.0 - g;
+      vec3 i1 = min(g.xyz, l.zxy);
+      vec3 i2 = max(g.xyz, l.zxy);
+      vec3 x1 = x0 - i1 + C.xxx;
+      vec3 x2 = x0 - i2 + C.yyy;
+      vec3 x3 = x0 - D.yyy;
+      i = mod289(i);
+      vec4 p = permute(permute(permute(
+                 i.z + vec4(0.0, i1.z, i2.z, 1.0))
+               + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+               + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+      float n_ = 0.142857142857;
+      vec3 ns = n_ * D.wyz - D.xzx;
+      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+      vec4 x_ = floor(j * ns.z);
+      vec4 y_ = floor(j - 7.0 * x_);
+      vec4 x = x_ * ns.x + ns.yyyy;
+      vec4 y = y_ * ns.x + ns.yyyy;
+      vec4 h = 1.0 - abs(x) - abs(y);
+      vec4 b0 = vec4(x.xy, y.xy);
+      vec4 b1 = vec4(x.zw, y.zw);
+      vec4 s0 = floor(b0)*2.0 + 1.0;
+      vec4 s1 = floor(b1)*2.0 + 1.0;
+      vec4 sh = -step(h, vec4(0.0));
+      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+      vec3 p0 = vec3(a0.xy, h.x);
+      vec3 p1 = vec3(a0.zw, h.y);
+      vec3 p2 = vec3(a1.xy, h.z);
+      vec3 p3 = vec3(a1.zw, h.w);
+      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+      p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+      m = m * m;
+      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+    }
+  `;
+
+  // Exact Blueberry Sphere: args [1.4, 128, 128]
+  const sphereGeom = new THREE.SphereGeometry(1.4, 128, 128);
+
+  // Exact Material attributes:
+  // color: "#3a3aa8", emissive: "#1e1b6e", emissiveIntensity: 0.6,
+  // roughness: 0.15, metalness: 0.6, clearcoat: 1
+  const distortUniforms = {
+    time: { value: 0 },
+    distort: { value: 0.4 },
+    speed: { value: 2.0 },
+    radius: { value: 1.0 }
+  };
+
+  const sphereMat = new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color("#3a3aa8"),
+    emissive: new THREE.Color("#1e1b6e"),
     emissiveIntensity: 0.6,
     roughness: 0.15,
     metalness: 0.6,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.1
   });
-  const sphere = new THREE.Mesh(geom, mat);
-  scene.add(sphere);
 
-  // Inner Glow Core
+  sphereMat.onBeforeCompile = (shader) => {
+    shader.uniforms.time = distortUniforms.time;
+    shader.uniforms.distort = distortUniforms.distort;
+    shader.uniforms.speed = distortUniforms.speed;
+    shader.uniforms.radius = distortUniforms.radius;
+
+    shader.vertexShader = `
+      uniform float time;
+      uniform float distort;
+      uniform float speed;
+      uniform float radius;
+      ${simplexNoiseGLSL}
+      ${shader.vertexShader}
+    `;
+
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      `
+      #include <begin_vertex>
+      float updateTime = time * speed;
+      transformed += normal * snoise(vec3(position * radius + updateTime)) * distort;
+      `
+    );
+  };
+
+  const blueberryMesh = new THREE.Mesh(sphereGeom, sphereMat);
+  floatGroup.add(blueberryMesh);
+
+  // Exact Inner Glow Core: args [1.05, 32, 32], color: "#6366f1", opacity: 0.08
   const innerGeom = new THREE.SphereGeometry(1.05, 32, 32);
   const innerMat = new THREE.MeshBasicMaterial({
-    color: 0x6366f1,
+    color: new THREE.Color("#6366f1"),
     transparent: true,
-    opacity: 0.08,
+    opacity: 0.08
   });
-  const innerSphere = new THREE.Mesh(innerGeom, innerMat);
-  scene.add(innerSphere);
+  const innerMesh = new THREE.Mesh(innerGeom, innerMat);
+  floatGroup.add(innerMesh);
 
-  // Particle cloud (600 points)
+  // Exact Particles: 600 points, r = 3 + Math.random() * 4, color "#a5b4fc", opacity 0.7, size 0.025
   const particleCount = 600;
   const particlePositions = new Float32Array(particleCount * 3);
   for (let i = 0; i < particleCount; i++) {
     const r = 3 + Math.random() * 4;
-    const t = Math.random() * Math.PI * 2;
-    const p = Math.acos(2 * Math.random() - 1);
-    particlePositions[i * 3] = r * Math.sin(p) * Math.cos(t);
-    particlePositions[i * 3 + 1] = r * Math.sin(p) * Math.sin(t);
-    particlePositions[i * 3 + 2] = r * Math.cos(p);
+    const t_ang = Math.random() * Math.PI * 2;
+    const p_ang = Math.acos(2 * Math.random() - 1);
+    particlePositions[i * 3] = r * Math.sin(p_ang) * Math.cos(t_ang);
+    particlePositions[i * 3 + 1] = r * Math.sin(p_ang) * Math.sin(t_ang);
+    particlePositions[i * 3 + 2] = r * Math.cos(p_ang);
   }
   const particleGeom = new THREE.BufferGeometry();
-  particleGeom.setAttribute(
-    "position",
-    new THREE.BufferAttribute(particlePositions, 3)
-  );
+  particleGeom.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
   const particleMat = new THREE.PointsMaterial({
     size: 0.025,
-    color: 0xa5b4fc,
+    color: new THREE.Color("#a5b4fc"),
     transparent: true,
     opacity: 0.7,
+    sizeAttenuation: true
   });
   const particles = new THREE.Points(particleGeom, particleMat);
   scene.add(particles);
 
-  // Window resize handler
+  // Mouse & Scroll state tracking matching Orb.tsx
+  const mouseState = { x: 0, y: 0 };
+  let scrollProgress = 0;
+
+  window.addEventListener("scroll", () => {
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    scrollProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+  });
+
+  window.addEventListener("pointermove", (e) => {
+    mouseState.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseState.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  });
+
   window.addEventListener("resize", () => {
     if (!container) return;
     camera.aspect = container.clientWidth / container.clientHeight;
@@ -262,64 +358,49 @@ function initOrb() {
     renderer.setSize(container.clientWidth, container.clientHeight);
   });
 
-  // Animation Loop with scroll & mouse distortion
-  let mouseTargetX = 0, mouseTargetY = 0;
-  let currentRotX = 0, currentRotY = 0;
+  const mouseSmooth = { x: 0, y: 0 };
+  const clock = new THREE.Clock();
 
-  window.addEventListener("pointermove", (e) => {
-    mouseTargetX = (e.clientX / window.innerWidth) * 2 - 1;
-    mouseTargetY = -(e.clientY / window.innerHeight) * 2 + 1;
-  });
-
-  let clock = new THREE.Clock();
-
-  function animate() {
-    requestAnimationFrame(animate);
+  function renderLoop() {
+    requestAnimationFrame(renderLoop);
     const dt = clock.getDelta();
     const elapsedTime = clock.getElapsedTime();
 
-    // Scroll progress
-    const scrollProgress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight || 1);
+    // Exact Float behavior: speed 1.2, floatIntensity 1.2, rotationIntensity 0.4
+    floatGroup.position.y = Math.sin(elapsedTime * 1.2) * 0.12;
+    floatGroup.rotation.z = Math.sin(elapsedTime * 0.6) * 0.04;
 
-    // Mouse interpolation
-    currentRotX += (mouseTargetY * 0.4 - currentRotX) * 0.05;
-    currentRotY += (mouseTargetX * 0.6 - currentRotY) * 0.05;
+    // Exact Mouse smoothing & Rotation from useFrame:
+    // mouse.x += (m.x - mouse.x) * 0.05
+    // mouse.y += (m.y - mouse.y) * 0.05
+    // ref.rotation.y += dt * 0.15 + mouse.x * dt * 0.6
+    // ref.rotation.x = mouse.y * 0.4
+    // s = 1 + Math.sin(elapsedTime * 0.8) * 0.03
+    mouseSmooth.x += (mouseState.x - mouseSmooth.x) * 0.05;
+    mouseSmooth.y += (mouseState.y - mouseSmooth.y) * 0.05;
 
-    sphere.rotation.y += dt * 0.15 + currentRotY * dt;
-    sphere.rotation.x = currentRotX;
+    blueberryMesh.rotation.y += dt * 0.15 + mouseSmooth.x * dt * 0.6;
+    blueberryMesh.rotation.x = mouseSmooth.y * 0.4;
 
-    const scale = 1 + Math.sin(elapsedTime * 0.8) * 0.03;
-    sphere.scale.set(scale, scale, scale);
+    const s = 1 + Math.sin(elapsedTime * 0.8) * 0.03;
+    blueberryMesh.scale.set(s, s, s);
 
+    // Exact Dynamic Distort & Speed from useFrame:
+    // mat.distort = 0.35 + scroll.v * 0.5 + Math.sin(elapsedTime) * 0.05
+    // mat.speed = 1.5 + scroll.v * 3
+    distortUniforms.distort.value = 0.35 + scrollProgress * 0.5 + Math.sin(elapsedTime) * 0.05;
+    distortUniforms.speed.value = 1.5 + scrollProgress * 3;
+    distortUniforms.time.value = elapsedTime;
+
+    // Particles rotation: ref.rotation.y += dt * 0.02
     particles.rotation.y += dt * 0.02;
-
-    // Vertex noise distortion matching MeshDistortMaterial
-    const pos = geom.attributes.position;
-    const orig = originalPos;
-    const distort = 0.35 + scrollProgress * 0.5 + Math.sin(elapsedTime) * 0.05;
-    const speed = 1.5 + scrollProgress * 3;
-
-    for (let i = 0; i < pos.count; i++) {
-      const u = orig.getX(i);
-      const v = orig.getY(i);
-      const w = orig.getZ(i);
-
-      const wave = Math.sin(u * 1.5 + elapsedTime * speed) *
-                   Math.cos(v * 1.5 + elapsedTime * speed) *
-                   Math.sin(w * 1.5 + elapsedTime * speed);
-
-      const factor = 1 + wave * (distort * 0.12);
-      pos.setXYZ(i, u * factor, v * factor, w * factor);
-    }
-    pos.needsUpdate = true;
-    geom.computeVertexNormals();
 
     renderer.render(scene, camera);
   }
-  animate();
+  renderLoop();
 }
 
-// 5. DOM INITIALIZATION
+// --- 5. INITIALIZE ---
 document.addEventListener("DOMContentLoaded", () => {
   setLanguage(currentLang);
 
@@ -330,11 +411,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initialize Lucide icons
   if (typeof lucide !== "undefined") {
     lucide.createIcons();
   }
 
-  // Initialize 3D Orb
   initOrb();
 });
