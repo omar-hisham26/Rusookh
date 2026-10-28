@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>رسوخ | استوديو برمجيات</title>
+  <title>رسوخ | استوديو برمجيات وتطبيقات جوال</title>
   <meta name="description" content="رسوخ استوديو برمجي لتصميم وتطوير تطبيقات الجوال ومنصات الويب بأحدث التقنيات وبأعلى معايير الأداء والجمال.">
   <link rel="icon" type="image/jpeg" href="assets/rusookh-logo.jpeg">
 
@@ -16,12 +16,12 @@
   <!-- Three.js for 3D Orb -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <!-- Custom CSS matching original repo -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="relative min-h-screen overflow-x-hidden bg-[#050514] text-white">
+<body class="relative min-h-screen overflow-x-hidden bg-[#02050c] text-white">
 
-  <!-- CURSOR GLOW -->
+  <!-- CURSOR GLOW (Pure Electric Blue) -->
   <div id="cursor-glow" aria-hidden="true"></div>
 
   <!-- GRID BACKGROUND -->
@@ -49,7 +49,7 @@
           <span id="lang-btn-text">English</span>
         </button>
 
-        <a href="#contact" class="hidden sm:inline-flex text-sm px-4 py-2 rounded-full bg-white text-[#0b0b2a] font-medium hover:bg-white/90 transition" data-i18n="nav_cta">
+        <a href="#contact" class="hidden sm:inline-flex text-sm px-4 py-2 rounded-full bg-white text-[#02050c] font-medium hover:bg-white/90 transition" data-i18n="nav_cta">
           ابدأ مشروعك
         </a>
       </div>
@@ -58,14 +58,14 @@
 
   <!-- HERO SECTION -->
   <section id="top" class="relative flex min-h-[100svh] items-center justify-center">
-    <!-- 3D Orb Background Container -->
+    <!-- 3D Blue Orb Background Container -->
     <div id="orb-container" class="absolute inset-0 pointer-events-none"></div>
 
-    <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at center, transparent 40%, rgba(5,5,20,0.7) 100%);"></div>
+    <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at center, transparent 40%, rgba(2,5,12,0.75) 100%);"></div>
 
     <div class="relative z-10 max-w-5xl px-6 pt-24 text-center">
-      <div class="glass mb-8 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 animate-floaty">
-        <i data-lucide="sparkles" class="h-3.5 w-3.5 text-indigo-300"></i>
+      <div class="glass mb-8 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80">
+        <i data-lucide="sparkles" class="h-3.5 w-3.5 text-blue-400"></i>
         <span data-i18n="hero_badge">فريق برمجي يصنع المستقبل</span>
       </div>
 
@@ -82,7 +82,7 @@
       </p>
 
       <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
-        <a href="#services" class="glow-electric group flex items-center gap-2 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 px-6 py-3 text-sm font-medium transition hover:scale-[1.03]">
+        <a href="#services" class="glow-electric group flex items-center gap-2 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 px-6 py-3 text-sm font-medium transition hover:scale-[1.03]">
           <span data-i18n="hero_cta_1">اكتشف أعمالنا</span>
           <i data-lucide="arrow-up-right" class="h-4 w-4 transition-transform group-hover:rotate-45"></i>
         </a>
@@ -96,7 +96,7 @@
     <!-- Scroll Indicator -->
     <div class="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs text-white/40">
       <span data-i18n="scroll">مرّر</span>
-      <div class="h-10 w-px bg-gradient-to-b from-white/60 to-transparent animate-pulse"></div>
+      <div class="h-10 w-px bg-gradient-to-b from-blue-400/80 to-transparent animate-pulse"></div>
     </div>
   </section>
 
@@ -105,7 +105,7 @@
     <div class="mx-auto max-w-7xl">
       <div class="grid items-center gap-16 md:grid-cols-2">
         <div class="reveal">
-          <div class="mb-4 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="about_kicker">عن رسوخ</div>
+          <div class="mb-4 text-xs uppercase tracking-[0.3em] text-blue-400/80" data-i18n="about_kicker">عن رسوخ</div>
           <h2 class="text-4xl font-semibold leading-[1.05] md:text-6xl">
             <span data-i18n="about_title_1">استوديو مبني لأجل</span>
             <span class="text-gradient" data-i18n="about_title_2">ما هو قادم.</span>
@@ -125,7 +125,7 @@
     <div class="mx-auto max-w-7xl">
       <div class="reveal mb-14 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div class="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="services_kicker">ماذا نقدم</div>
+          <div class="mb-3 text-xs uppercase tracking-[0.3em] text-blue-400/80" data-i18n="services_kicker">ماذا نقدم</div>
           <h2 class="text-4xl font-semibold md:text-5xl" data-i18n="services_title">خدمات مصممة لإحداث الأثر.</h2>
         </div>
         <p class="max-w-md text-white/60" data-i18n="services_desc">تصميم وبناء وتشغيل تطبيقات الجوال ومنصات الويب من البداية للنهاية.</p>
@@ -136,11 +136,11 @@
         <!-- Service 1: Custom Solutions -->
         <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
           <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
-            <i data-lucide="code" class="h-5 w-5 text-indigo-300"></i>
+            <i data-lucide="code" class="h-5 w-5 text-blue-400"></i>
           </div>
           <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_ai_t">حلول مخصصة</h3>
           <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_ai_d">تطبيقات برمجية مخصصة مصممة لحل تحديات عملك الفريدة.</p>
-          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-blue-400 opacity-0 transition-opacity group-hover:opacity-100">
             <span data-i18n="learn_more">اعرف المزيد</span>
             <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </div>
@@ -149,11 +149,11 @@
         <!-- Service 2: Mobile Apps -->
         <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
           <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
-            <i data-lucide="smartphone" class="h-5 w-5 text-indigo-300"></i>
+            <i data-lucide="smartphone" class="h-5 w-5 text-blue-400"></i>
           </div>
           <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_mob_t">تطبيقات الجوال</h3>
           <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_mob_d">تجارب iOS وAndroid بمستوى أصلي وبنية تعمل دون اتصال أولاً.</p>
-          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-blue-400 opacity-0 transition-opacity group-hover:opacity-100">
             <span data-i18n="learn_more">اعرف المزيد</span>
             <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </div>
@@ -162,11 +162,11 @@
         <!-- Service 3: Web Platforms -->
         <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
           <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
-            <i data-lucide="globe" class="h-5 w-5 text-indigo-300"></i>
+            <i data-lucide="globe" class="h-5 w-5 text-blue-400"></i>
           </div>
           <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_web_t">منصات الويب</h3>
           <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_web_d">منتجات ويب سريعة وسهلة الوصول مبنية على بيئات تشغيل حديثة.</p>
-          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-blue-400 opacity-0 transition-opacity group-hover:opacity-100">
             <span data-i18n="learn_more">اعرف المزيد</span>
             <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </div>
@@ -175,11 +175,11 @@
         <!-- Service 4: UI/UX Design -->
         <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
           <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
-            <i data-lucide="layout" class="h-5 w-5 text-indigo-300"></i>
+            <i data-lucide="layout" class="h-5 w-5 text-blue-400"></i>
           </div>
           <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_auto_t">تصميم واجهات المستخدم</h3>
           <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_auto_d">تصاميم جميلة تتمحور حول المستخدم للارتقاء بعلامتك التجارية وزيادة تفاعل جمهورك.</p>
-          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-blue-400 opacity-0 transition-opacity group-hover:opacity-100">
             <span data-i18n="learn_more">اعرف المزيد</span>
             <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </div>
@@ -188,11 +188,11 @@
         <!-- Service 5: Digital Transformation -->
         <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
           <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
-            <i data-lucide="cpu" class="h-5 w-5 text-indigo-300"></i>
+            <i data-lucide="cpu" class="h-5 w-5 text-blue-400"></i>
           </div>
           <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_dx_t">التحول الرقمي</h3>
           <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_dx_d">تحديث الأنظمة القديمة بأسس سحابية آمنة وقابلة للتوسع.</p>
-          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-blue-400 opacity-0 transition-opacity group-hover:opacity-100">
             <span data-i18n="learn_more">اعرف المزيد</span>
             <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </div>
@@ -201,11 +201,11 @@
         <!-- Service 6: E-commerce -->
         <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
           <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
-            <i data-lucide="shopping-cart" class="h-5 w-5 text-indigo-300"></i>
+            <i data-lucide="shopping-cart" class="h-5 w-5 text-blue-400"></i>
           </div>
           <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_smart_t">المتاجر الإلكترونية</h3>
           <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_smart_d">متاجر إلكترونية قوية مصممة لزيادة المبيعات وتوفير تجربة تسوق سلسة.</p>
-          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-blue-400 opacity-0 transition-opacity group-hover:opacity-100">
             <span data-i18n="learn_more">اعرف المزيد</span>
             <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </div>
@@ -219,7 +219,7 @@
   <section id="work" class="relative px-6 py-32">
     <div class="mx-auto max-w-7xl">
       <div class="reveal mb-14">
-        <div class="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="work_kicker">أعمال مختارة</div>
+        <div class="mb-3 text-xs uppercase tracking-[0.3em] text-blue-400/80" data-i18n="work_kicker">أعمال مختارة</div>
         <h2 class="text-4xl font-semibold md:text-5xl" data-i18n="work_title">منتجات في السوق.</h2>
       </div>
 
@@ -227,7 +227,7 @@
         <!-- Project 1: Rebalance -->
         <div class="reveal">
           <a href="https://www.rebalance.sa" target="_blank" rel="noopener noreferrer" class="glass group relative block aspect-[4/3] overflow-hidden rounded-3xl transition hover:scale-[1.01]">
-            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/30 to-fuchsia-500/20"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600/30 to-cyan-500/20"></div>
             <div class="absolute inset-0" style="background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), transparent 50%);"></div>
 
             <div class="absolute start-6 top-6 text-xs uppercase tracking-widest text-white/70" data-i18n="proj_rebalance_tag">صفحة ويب + تطبيقات جوال</div>
@@ -248,7 +248,7 @@
         <!-- Project 2: Viro -->
         <div class="reveal">
           <a href="https://apps.apple.com/sa/app/viro/id6771511279" target="_blank" rel="noopener noreferrer" class="glass group relative block aspect-[4/3] overflow-hidden rounded-3xl transition hover:scale-[1.01]">
-            <div class="absolute inset-0 bg-gradient-to-br from-cyan-400/30 to-indigo-500/20"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/30 to-blue-600/20"></div>
             <div class="absolute inset-0" style="background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), transparent 50%);"></div>
 
             <div class="absolute start-6 top-6 text-xs uppercase tracking-widest text-white/70" data-i18n="proj_viro_tag">تطبيقات جوال</div>
@@ -273,7 +273,7 @@
   <section id="stack" class="relative px-6 py-32">
     <div class="mx-auto max-w-6xl">
       <div class="reveal mb-12 text-center">
-        <div class="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="stack_kicker">التقنيات التي نستخدمها</div>
+        <div class="mb-3 text-xs uppercase tracking-[0.3em] text-blue-400/80" data-i18n="stack_kicker">التقنيات التي نستخدمها</div>
         <h2 class="text-4xl font-semibold md:text-5xl" data-i18n="stack_title">دائماً نستخدم أحدث التقنيات.</h2>
       </div>
 
@@ -289,7 +289,7 @@
   <section id="contact" class="relative px-6 py-32">
     <div class="mx-auto max-w-4xl text-center">
       <div class="reveal">
-        <div class="mb-4 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="contact_kicker">تواصل</div>
+        <div class="mb-4 text-xs uppercase tracking-[0.3em] text-blue-400/80" data-i18n="contact_kicker">تواصل</div>
         <h2 class="text-5xl font-semibold leading-[0.95] tracking-tight md:text-7xl">
           <span data-i18n="contact_title_1">لنبني شيئاً</span><br>
           <span class="text-gradient" data-i18n="contact_title_2">لا يُنسى.</span>
@@ -298,11 +298,11 @@
 
       <div class="reveal mx-auto mt-12 flex max-w-2xl flex-col justify-center gap-4 sm:flex-row">
         <a href="https://wa.me/966504267480" target="_blank" rel="noopener noreferrer" class="glass-strong flex items-center justify-center gap-3 rounded-xl px-8 py-4 font-medium transition hover:bg-white/10">
-          <i data-lucide="message-circle" class="h-5 w-5 text-green-400"></i>
+          <i data-lucide="message-circle" class="h-5 w-5 text-emerald-400"></i>
           <span dir="ltr">+966 50 426 7480</span>
         </a>
 
-        <a href="mailto:contact@russokh.com" class="flex items-center justify-center gap-3 rounded-xl bg-white px-8 py-4 font-medium text-[#0b0b2a] transition hover:bg-white/90">
+        <a href="mailto:contact@russokh.com" class="flex items-center justify-center gap-3 rounded-xl bg-white px-8 py-4 font-medium text-[#02050c] transition hover:bg-white/90">
           <i data-lucide="mail" class="h-5 w-5"></i>
           <span>contact@russokh.com</span>
         </a>

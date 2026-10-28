@@ -1,7 +1,6 @@
 /**
  * Rusookh - 1:1 Exact Vanilla JS Conversion of the original repository
- * Implements the exact Orb.tsx Three.js MeshDistortMaterial shader,
- * lighting, colors, particles, floating physics, and mouse/scroll responsiveness.
+ * Color Theme: Pure Electric Sapphire Blue (أزرق ملكي كهربائي ناصع بدون أي تدرجات بنفسجية)
  */
 
 // --- 1. EXACT I18N DICTIONARY FROM src/lib/i18n.tsx ---
@@ -120,7 +119,7 @@ function setLanguage(lang) {
   }
 }
 
-// --- 2. EXACT CURSOR GLOW (from index.tsx) ---
+// --- 2. EXACT CURSOR GLOW (Electric Pure Blue) ---
 const cursorGlow = document.getElementById("cursor-glow");
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
@@ -143,7 +142,7 @@ function animateCursorGlow() {
 }
 requestAnimationFrame(animateCursorGlow);
 
-// --- 3. REVEAL ANIMATIONS (matching Framer Motion whileInView) ---
+// --- 3. REVEAL ANIMATIONS ---
 const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
@@ -158,12 +157,11 @@ const revealObserver = new IntersectionObserver(
 
 document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
 
-// --- 4. EXACT THREE.JS 3D ORB (1:1 with Orb.tsx Blueberry & Particles) ---
+// --- 4. 3D BLUE ORB (Pure Sapphire Electric Blue) ---
 function initOrb() {
   const container = document.getElementById("orb-container");
   if (!container || typeof THREE === "undefined") return;
 
-  // Camera matching Orb.tsx: position [0, 0, 4.5], fov 45
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     45,
@@ -178,27 +176,22 @@ function initOrb() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  // Lights matching Orb.tsx exactly:
-  // ambientLight intensity 0.4
-  // pointLight [5, 5, 5] intensity 2 color="#6366f1"
-  // pointLight [-5, -3, 2] intensity 1.5 color="#22d3ee"
-  // pointLight [0, -5, 4] intensity 1 color="#a855f7"
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+  // Pure Blue & Cyan Point Lights
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
   scene.add(ambientLight);
 
-  const light1 = new THREE.PointLight(0x6366f1, 2, 50);
+  const light1 = new THREE.PointLight(0x2563eb, 2.4, 50); // Royal Electric Blue
   light1.position.set(5, 5, 5);
   scene.add(light1);
 
-  const light2 = new THREE.PointLight(0x22d3ee, 1.5, 50);
+  const light2 = new THREE.PointLight(0x38bdf8, 2.0, 50); // Sky Cyan Blue
   light2.position.set(-5, -3, 2);
   scene.add(light2);
 
-  const light3 = new THREE.PointLight(0xa855f7, 1, 50);
+  const light3 = new THREE.PointLight(0x0284c7, 1.4, 50); // Deep Azure Blue
   light3.position.set(0, -5, 4);
   scene.add(light3);
 
-  // Group for Float behavior
   const floatGroup = new THREE.Group();
   scene.add(floatGroup);
 
@@ -253,12 +246,9 @@ function initOrb() {
     }
   `;
 
-  // Exact Blueberry Sphere: args [1.4, 128, 128]
+  // Sphere: args [1.4, 128, 128]
   const sphereGeom = new THREE.SphereGeometry(1.4, 128, 128);
 
-  // Exact Material attributes:
-  // color: "#3a3aa8", emissive: "#1e1b6e", emissiveIntensity: 0.6,
-  // roughness: 0.15, metalness: 0.6, clearcoat: 1
   const distortUniforms = {
     time: { value: 0 },
     distort: { value: 0.4 },
@@ -266,14 +256,15 @@ function initOrb() {
     radius: { value: 1.0 }
   };
 
+  // Pure Vibrant Electric Blue Material (Zero Purple)
   const sphereMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color("#3a3aa8"),
-    emissive: new THREE.Color("#1e1b6e"),
-    emissiveIntensity: 0.6,
-    roughness: 0.15,
-    metalness: 0.6,
+    color: new THREE.Color("#1d4ed8"),        // Vibrant Electric Blue
+    emissive: new THREE.Color("#0c2340"),     // Deep Oceanic Glow
+    emissiveIntensity: 0.7,
+    roughness: 0.12,
+    metalness: 0.65,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.1
+    clearcoatRoughness: 0.08
   });
 
   sphereMat.onBeforeCompile = (shader) => {
@@ -304,17 +295,17 @@ function initOrb() {
   const blueberryMesh = new THREE.Mesh(sphereGeom, sphereMat);
   floatGroup.add(blueberryMesh);
 
-  // Exact Inner Glow Core: args [1.05, 32, 32], color: "#6366f1", opacity: 0.08
+  // Inner Cyan Blue Glow Core: args [1.05, 32, 32]
   const innerGeom = new THREE.SphereGeometry(1.05, 32, 32);
   const innerMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#6366f1"),
+    color: new THREE.Color("#38bdf8"),
     transparent: true,
-    opacity: 0.08
+    opacity: 0.1
   });
   const innerMesh = new THREE.Mesh(innerGeom, innerMat);
   floatGroup.add(innerMesh);
 
-  // Exact Particles: 600 points, r = 3 + Math.random() * 4, color "#a5b4fc", opacity 0.7, size 0.025
+  // Particles: Ice Blue points
   const particleCount = 600;
   const particlePositions = new Float32Array(particleCount * 3);
   for (let i = 0; i < particleCount; i++) {
@@ -329,15 +320,14 @@ function initOrb() {
   particleGeom.setAttribute("position", new THREE.BufferAttribute(particlePositions, 3));
   const particleMat = new THREE.PointsMaterial({
     size: 0.025,
-    color: new THREE.Color("#a5b4fc"),
+    color: new THREE.Color("#93c5fd"), // Starlight Ice Blue
     transparent: true,
-    opacity: 0.7,
+    opacity: 0.75,
     sizeAttenuation: true
   });
   const particles = new THREE.Points(particleGeom, particleMat);
   scene.add(particles);
 
-  // Mouse & Scroll state tracking matching Orb.tsx
   const mouseState = { x: 0, y: 0 };
   let scrollProgress = 0;
 
@@ -366,16 +356,9 @@ function initOrb() {
     const dt = clock.getDelta();
     const elapsedTime = clock.getElapsedTime();
 
-    // Exact Float behavior: speed 1.2, floatIntensity 1.2, rotationIntensity 0.4
     floatGroup.position.y = Math.sin(elapsedTime * 1.2) * 0.12;
     floatGroup.rotation.z = Math.sin(elapsedTime * 0.6) * 0.04;
 
-    // Exact Mouse smoothing & Rotation from useFrame:
-    // mouse.x += (m.x - mouse.x) * 0.05
-    // mouse.y += (m.y - mouse.y) * 0.05
-    // ref.rotation.y += dt * 0.15 + mouse.x * dt * 0.6
-    // ref.rotation.x = mouse.y * 0.4
-    // s = 1 + Math.sin(elapsedTime * 0.8) * 0.03
     mouseSmooth.x += (mouseState.x - mouseSmooth.x) * 0.05;
     mouseSmooth.y += (mouseState.y - mouseSmooth.y) * 0.05;
 
@@ -385,14 +368,10 @@ function initOrb() {
     const s = 1 + Math.sin(elapsedTime * 0.8) * 0.03;
     blueberryMesh.scale.set(s, s, s);
 
-    // Exact Dynamic Distort & Speed from useFrame:
-    // mat.distort = 0.35 + scroll.v * 0.5 + Math.sin(elapsedTime) * 0.05
-    // mat.speed = 1.5 + scroll.v * 3
     distortUniforms.distort.value = 0.35 + scrollProgress * 0.5 + Math.sin(elapsedTime) * 0.05;
     distortUniforms.speed.value = 1.5 + scrollProgress * 3;
     distortUniforms.time.value = elapsedTime;
 
-    // Particles rotation: ref.rotation.y += dt * 0.02
     particles.rotation.y += dt * 0.02;
 
     renderer.render(scene, camera);

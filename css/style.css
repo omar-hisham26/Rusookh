@@ -18,10 +18,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Deep Sapphire/Midnight Navy Blue Background - Zero Purple */
 body {
-  background: radial-gradient(ellipse at top, #1e1345 0%, #0c0824 60%, #060417 100%);
+  background: radial-gradient(ellipse at top, #0a1936 0%, #050d1f 60%, #02050c 100%);
   background-attachment: fixed;
-  background-color: #050514;
+  background-color: #02050c;
   color: #ffffff;
   font-family: var(--font-body);
   overflow-x: hidden;
@@ -34,11 +35,11 @@ h1, h2, h3, h4 {
 }
 
 ::selection {
-  background: rgba(99, 102, 241, 0.5);
+  background: rgba(37, 99, 235, 0.5);
   color: #ffffff;
 }
 
-/* Exact Glass & Glass-strong utilities from src/styles.css */
+/* Glassmorphism Styles matching original with pure blue tint */
 .glass {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
   backdrop-filter: blur(20px) saturate(140%);
@@ -53,18 +54,19 @@ h1, h2, h3, h4 {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Pure Ice Blue to Electric Blue Text Gradient */
 .text-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 40%, #6366f1 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #93c5fd 40%, #2563eb 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .glow-electric {
-  box-shadow: 0 0 60px -10px rgba(99, 102, 241, 0.6), 0 0 120px -30px rgba(129, 140, 248, 0.5);
+  box-shadow: 0 0 60px -10px rgba(37, 99, 235, 0.6), 0 0 120px -30px rgba(56, 189, 248, 0.5);
 }
 
-/* Exact Reveal transition matching Framer Motion's whileInView */
+/* Reveal transition matching Framer Motion whileInView */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -76,7 +78,7 @@ h1, h2, h3, h4 {
   transform: translateY(0);
 }
 
-/* Cursor Glow matching index.tsx */
+/* Cursor Glow - Pure Electric Blue */
 #cursor-glow {
   position: fixed;
   top: 0;
@@ -85,13 +87,13 @@ h1, h2, h3, h4 {
   height: 500px;
   border-radius: 50%;
   filter: blur(80px);
-  background: radial-gradient(circle, rgba(99,102,241,0.18), transparent 60%);
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.22), rgba(56, 189, 248, 0.08) 45%, transparent 70%);
   pointer-events: none;
   transform: translate(-50%, -50%);
   z-index: 0;
 }
 
-/* Background Grid matching index.tsx */
+/* Background Grid */
 .bg-grid {
   position: fixed;
   inset: 0;
