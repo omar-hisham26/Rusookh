@@ -3,601 +3,347 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>رسوخ | Rusookh — استوديو هندسة المستقبل الرقمي</title>
-  <meta name="description" content="رسوخ استوديو سينمائي تقني متقدم لتصميم وتطوير تطبيقات الجوال الفائقة، المنصات السحابية، وأنظمة الذكاء الاصطناعي بدقة هندسية لا تضاهى.">
+  <title>رسوخ | استوديو برمجيات وتطبيقات جوال</title>
+  <meta name="description" content="رسوخ استوديو برمجي لتصميم وتطوير تطبيقات الجوال ومنصات الويب بأحدث التقنيات وبأعلى معايير الأداء والجمال.">
   <link rel="icon" type="image/jpeg" href="assets/rusookh-logo.jpeg">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            abyss: '#030508',
-            surface: '#0a0d14',
-            cyberBlue: '#00F2FE',
-            cyberEmerald: '#10B981',
-            cyberPurple: '#7928CA',
-            cyberAmber: '#F59E0B',
-          }
-        }
-      }
-    }
-  </script>
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Custom Cinematic CSS -->
-  <link rel="stylesheet" href="css/cinematic.css">
+  <!-- Three.js for 3D Orb -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Custom CSS matching original repo -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="font-arabic selection:bg-cyan-500 selection:text-black">
+<body class="relative min-h-screen overflow-x-hidden bg-[#050514] text-white">
 
-  <!-- Film Grain Overlay -->
-  <div class="film-grain"></div>
+  <!-- CURSOR GLOW -->
+  <div id="cursor-glow" aria-hidden="true"></div>
 
-  <!-- Cinematic Letterbox Bars -->
-  <div class="cinema-bar-top"></div>
-  <div class="cinema-bar-bottom"></div>
+  <!-- GRID BACKGROUND -->
+  <div class="bg-grid" aria-hidden="true"></div>
 
-  <!-- Ambient Aurora Glow Orbs -->
-  <div class="aurora-orb aurora-1"></div>
-  <div class="aurora-orb aurora-2"></div>
-  <div class="aurora-orb aurora-3"></div>
-
-  <!-- Background Cosmic Starfield Canvas -->
-  <canvas id="nebula-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
-
-  <!-- ==================== TOP DIRECTOR HUD ==================== -->
-  <header class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-white/10 px-6 py-4 flex items-center justify-between transition-all duration-300">
-    <div class="flex items-center gap-4">
-      <a href="#section-hero" class="flex items-center gap-3 group">
-        <img src="assets/rusookh-logo.jpeg" alt="Rusookh Logo" class="w-10 h-10 rounded-xl border border-white/20 shadow-lg group-hover:scale-105 transition-transform">
-        <div>
-          <div class="text-xl font-black tracking-wider text-white flex items-center gap-2">
-            <span data-i18n="brand_title">رسوخ</span>
-            <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">STUDIO 2026</span>
-          </div>
-          <p class="text-[11px] text-slate-400 hidden sm:block" data-i18n="brand_tagline">استوديو هندسة المستقبل الرقمي</p>
-        </div>
+  <!-- NAVIGATION -->
+  <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[min(96%,1100px)]">
+    <div class="glass-strong rounded-full px-4 py-2.5 flex items-center justify-between gap-2">
+      <a href="#top" class="flex items-center gap-2.5 px-2">
+        <img src="assets/rusookh-logo.jpeg" alt="Rusookh" class="w-8 h-8 rounded-md object-cover">
+        <span class="font-display font-semibold tracking-wide text-white" data-i18n="brand_name">رسوخ</span>
       </a>
-    </div>
 
-    <!-- Navigation links -->
-    <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-300">
-      <a href="#section-hero" class="hover:text-cyan-400 transition-colors" data-i18n="nav_intro">المقدمة</a>
-      <a href="#section-theater" class="hover:text-cyan-400 transition-colors" data-i18n="nav_theater">مسرح القدرات</a>
-      <a href="#section-architecture" class="hover:text-cyan-400 transition-colors" data-i18n="nav_architecture">المعمارية الحية</a>
-      <a href="#section-works" class="hover:text-cyan-400 transition-colors" data-i18n="nav_works">الأعمال النخبوية</a>
-      <a href="#section-collective" class="hover:text-cyan-400 transition-colors" data-i18n="nav_collective">فريق البناء</a>
-      <a href="#section-contact" class="hover:text-cyan-400 transition-colors" data-i18n="nav_contact">إطلاق مشروع</a>
-    </nav>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="#about" class="px-3 py-1.5 text-sm text-white/70 hover:text-white rounded-full hover:bg-white/5 transition-all" data-i18n="nav_about">من نحن</a>
+        <a href="#services" class="px-3 py-1.5 text-sm text-white/70 hover:text-white rounded-full hover:bg-white/5 transition-all" data-i18n="nav_services">الخدمات</a>
+        <a href="#work" class="px-3 py-1.5 text-sm text-white/70 hover:text-white rounded-full hover:bg-white/5 transition-all" data-i18n="nav_work">الأعمال</a>
+        <a href="#stack" class="px-3 py-1.5 text-sm text-white/70 hover:text-white rounded-full hover:bg-white/5 transition-all" data-i18n="nav_stack">التقنيات</a>
+        <a href="#contact" class="px-3 py-1.5 text-sm text-white/70 hover:text-white rounded-full hover:bg-white/5 transition-all" data-i18n="nav_contact">تواصل</a>
+      </nav>
 
-    <!-- Director Controls (Sound, Film Mode, Lang, CTA) -->
-    <div class="flex items-center gap-3">
-      <!-- Sound Toggle -->
-      <button id="sound-toggle-btn" class="px-3 py-1.5 rounded-full text-xs font-mono bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all flex items-center gap-2">
-        <span>🔇</span> <span data-i18n="sound_off">الصوت: صامت</span>
-      </button>
+      <div class="flex items-center gap-2">
+        <button id="lang-btn" aria-label="Toggle language" class="glass rounded-full px-3 py-2 text-xs text-white/80 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5">
+          <i data-lucide="languages" class="w-3.5 h-3.5"></i>
+          <span id="lang-btn-text">English</span>
+        </button>
 
-      <!-- Film Mode Toggle -->
-      <button id="film-mode-toggle-btn" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,242,254,0.15)]">
-        <span>🎬</span> <span data-i18n="film_mode_btn">العرض السينمائي</span>
-      </button>
-
-      <!-- Language Switch -->
-      <button id="lang-toggle-btn" class="px-3 py-1.5 rounded-full text-xs font-bold bg-white/5 hover:bg-white/15 border border-white/10 text-white transition-all">
-        English
-      </button>
-
-      <!-- Main CTA -->
-      <a href="#section-contact" class="hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black shadow-lg shadow-cyan-500/20 transition-all transform hover:scale-105">
-        <span data-i18n="nav_contact">إطلاق مشروع</span>
-        <i class="fa-solid fa-arrow-left ltr:rotate-180"></i>
-      </a>
+        <a href="#contact" class="hidden sm:inline-flex text-sm px-4 py-2 rounded-full bg-white text-[#0b0b2a] font-medium hover:bg-white/90 transition" data-i18n="nav_cta">
+          ابدأ مشروعك
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- Main Viewport Content -->
-  <main class="relative z-10 pt-24">
+  <!-- HERO SECTION -->
+  <section id="top" class="relative flex min-h-[100svh] items-center justify-center">
+    <!-- 3D Orb Background Container -->
+    <div id="orb-container" class="absolute inset-0 pointer-events-none"></div>
 
-    <!-- ==================== ACT I: THE OVERTURE (HERO) ==================== -->
-    <section id="section-hero" class="min-h-[92vh] flex flex-col justify-center items-center text-center px-6 relative">
-      <div class="max-w-4xl mx-auto space-y-8">
+    <div class="pointer-events-none absolute inset-0" style="background: radial-gradient(ellipse at center, transparent 40%, rgba(5,5,20,0.7) 100%);"></div>
+
+    <div class="relative z-10 max-w-5xl px-6 pt-24 text-center">
+      <div class="glass mb-8 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 animate-floaty">
+        <i data-lucide="sparkles" class="h-3.5 w-3.5 text-indigo-300"></i>
+        <span data-i18n="hero_badge">فريق برمجي يصنع المستقبل</span>
+      </div>
+
+      <h1 class="font-display text-[clamp(2.6rem,8vw,6.5rem)] font-semibold leading-[0.95] tracking-tighter">
+        <span id="hero-title-prefix" class="inline-block">
+          <span class="inline-block mx-1.5" data-i18n="hero_title_1">نهندس</span>
+        </span>
+        <br>
+        <span class="text-gradient" data-i18n="hero_title_2">المستقبل الذكي.</span>
+      </h1>
+
+      <p class="mx-auto mt-6 max-w-xl text-base text-white/60 md:text-lg" data-i18n="hero_desc">
+        رسوخ فريق واستوديو برمجي لتصميم وتطوير تطبيقات الجوال ومنصات الويب بدقة واحترافية عالية.
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <a href="#services" class="glow-electric group flex items-center gap-2 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 px-6 py-3 text-sm font-medium transition hover:scale-[1.03]">
+          <span data-i18n="hero_cta_1">اكتشف أعمالنا</span>
+          <i data-lucide="arrow-up-right" class="h-4 w-4 transition-transform group-hover:rotate-45"></i>
+        </a>
+
+        <a href="#contact" class="glass rounded-full px-6 py-3 text-sm transition hover:bg-white/10" data-i18n="hero_cta_2">
+          تواصل مع الفريق
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs text-white/40">
+      <span data-i18n="scroll">مرّر</span>
+      <div class="h-10 w-px bg-gradient-to-b from-white/60 to-transparent animate-pulse"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="relative px-6 py-32">
+    <div class="mx-auto max-w-7xl">
+      <div class="grid items-center gap-16 md:grid-cols-2">
+        <div class="reveal">
+          <div class="mb-4 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="about_kicker">عن رسوخ</div>
+          <h2 class="text-4xl font-semibold leading-[1.05] md:text-6xl">
+            <span data-i18n="about_title_1">استوديو مبني لأجل</span>
+            <span class="text-gradient" data-i18n="about_title_2">ما هو قادم.</span>
+          </h2>
+        </div>
+
+        <div class="reveal space-y-5 text-lg leading-relaxed text-white/70">
+          <p data-i18n="about_p1">نحن فريق من مطوري البرمجيات والمصممين، نصنع تطبيقات تبدو سلسة ومتقنة. كل منتج نطلقه مبني على الأداء والجمال والموثوقية.</p>
+          <p data-i18n="about_p2">من تطبيقات الجوال الطموحة إلى منصات الويب القابلة للتوسع، نشارك المؤسسين والشركات الراغبة في بناء تجارب رقمية استثنائية.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES SECTION -->
+  <section id="services" class="relative px-6 py-32">
+    <div class="mx-auto max-w-7xl">
+      <div class="reveal mb-14 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div class="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="services_kicker">ماذا نقدم</div>
+          <h2 class="text-4xl font-semibold md:text-5xl" data-i18n="services_title">خدمات مصممة لإحداث الأثر.</h2>
+        </div>
+        <p class="max-w-md text-white/60" data-i18n="services_desc">تصميم وبناء وتشغيل تطبيقات الجوال ومنصات الويب من البداية للنهاية.</p>
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         
-        <!-- Holo Badge -->
-        <div class="inline-block">
-          <div class="neon-pill animate-neon-pulse">
-            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-            <span data-i18n="hero_badge">استوديو هندسي فائق الأداء · Al Madinah · Global Impact</span>
+        <!-- Service 1: Custom Solutions -->
+        <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
+          <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
+            <i data-lucide="code" class="h-5 w-5 text-indigo-300"></i>
+          </div>
+          <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_ai_t">حلول مخصصة</h3>
+          <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_ai_d">تطبيقات برمجية مخصصة مصممة لحل تحديات عملك الفريدة.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+            <span data-i18n="learn_more">اعرف المزيد</span>
+            <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
           </div>
         </div>
 
-        <!-- Cinema Title Typography -->
-        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">
-          <span data-i18n="hero_title_prefix">نُهندس الرؤى لتصبح</span><br>
-          <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(0,242,254,0.3)]" data-i18n="hero_title_highlight">واقعاً رقمياً راسخاً</span>
-          <span class="text-slate-400 text-3xl sm:text-5xl block sm:inline" data-i18n="hero_title_suffix">يتحدى الزمن.</span>
-        </h1>
+        <!-- Service 2: Mobile Apps -->
+        <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
+          <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
+            <i data-lucide="smartphone" class="h-5 w-5 text-indigo-300"></i>
+          </div>
+          <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_mob_t">تطبيقات الجوال</h3>
+          <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_mob_d">تجارب iOS وAndroid بمستوى أصلي وبنية تعمل دون اتصال أولاً.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+            <span data-i18n="learn_more">اعرف المزيد</span>
+            <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
+          </div>
+        </div>
 
-        <!-- Manifesto Lead -->
-        <p class="text-base sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-light" data-i18n="hero_desc">
-          رسوخ ليس مجرد شركة تطوير، بل مختبر سينمائي تقني لصياغة تطبيقات الجوال المليونية، المنصات السحابية الحساسة، ومنظومات الذكاء الاصطناعي ذات الاستجابة اللحظية.
+        <!-- Service 3: Web Platforms -->
+        <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
+          <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
+            <i data-lucide="globe" class="h-5 w-5 text-indigo-300"></i>
+          </div>
+          <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_web_t">منصات الويب</h3>
+          <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_web_d">منتجات ويب سريعة وسهلة الوصول مبنية على بيئات تشغيل حديثة.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+            <span data-i18n="learn_more">اعرف المزيد</span>
+            <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
+          </div>
+        </div>
+
+        <!-- Service 4: UI/UX Design -->
+        <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
+          <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
+            <i data-lucide="layout" class="h-5 w-5 text-indigo-300"></i>
+          </div>
+          <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_auto_t">تصميم واجهات المستخدم</h3>
+          <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_auto_d">تصاميم جميلة تتمحور حول المستخدم للارتقاء بعلامتك التجارية وزيادة تفاعل جمهورك.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+            <span data-i18n="learn_more">اعرف المزيد</span>
+            <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
+          </div>
+        </div>
+
+        <!-- Service 5: Digital Transformation -->
+        <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
+          <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
+            <i data-lucide="cpu" class="h-5 w-5 text-indigo-300"></i>
+          </div>
+          <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_dx_t">التحول الرقمي</h3>
+          <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_dx_d">تحديث الأنظمة القديمة بأسس سحابية آمنة وقابلة للتوسع.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+            <span data-i18n="learn_more">اعرف المزيد</span>
+            <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
+          </div>
+        </div>
+
+        <!-- Service 6: E-commerce -->
+        <div class="reveal glass group relative h-full overflow-hidden rounded-2xl p-7 transition hover:-translate-y-1.5 duration-300">
+          <div class="glass-strong mb-5 flex h-12 w-12 items-center justify-center rounded-xl">
+            <i data-lucide="shopping-cart" class="h-5 w-5 text-indigo-300"></i>
+          </div>
+          <h3 class="mb-2 text-xl font-semibold" data-i18n="svc_smart_t">المتاجر الإلكترونية</h3>
+          <p class="text-sm leading-relaxed text-white/60" data-i18n="svc_smart_d">متاجر إلكترونية قوية مصممة لزيادة المبيعات وتوفير تجربة تسوق سلسة.</p>
+          <div class="mt-6 flex items-center gap-1.5 text-xs text-indigo-300 opacity-0 transition-opacity group-hover:opacity-100">
+            <span data-i18n="learn_more">اعرف المزيد</span>
+            <i data-lucide="arrow-up-right" class="h-3.5 w-3.5"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS (WORK) SECTION -->
+  <section id="work" class="relative px-6 py-32">
+    <div class="mx-auto max-w-7xl">
+      <div class="reveal mb-14">
+        <div class="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="work_kicker">أعمال مختارة</div>
+        <h2 class="text-4xl font-semibold md:text-5xl" data-i18n="work_title">منتجات في السوق.</h2>
+      </div>
+
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Project 1: Rebalance -->
+        <div class="reveal">
+          <a href="https://www.rebalance.sa" target="_blank" rel="noopener noreferrer" class="glass group relative block aspect-[4/3] overflow-hidden rounded-3xl transition hover:scale-[1.01]">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/30 to-fuchsia-500/20"></div>
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), transparent 50%);"></div>
+
+            <div class="absolute start-6 top-6 text-xs uppercase tracking-widest text-white/70" data-i18n="proj_rebalance_tag">صفحة ويب + تطبيقات جوال</div>
+
+            <div class="glass-strong absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-2xl p-2 shadow-2xl transition-transform duration-500 group-hover:scale-110 sm:h-36 sm:w-36">
+              <img src="assets/rebalance.jpg" alt="Rebalance" class="h-full w-full rounded-xl object-cover">
+            </div>
+
+            <div class="absolute bottom-6 start-6 end-6 flex items-end justify-between">
+              <h3 class="text-3xl font-semibold drop-shadow-md md:text-4xl" data-i18n="proj_rebalance_name">ريبالنس</h3>
+              <div class="glass-strong flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-transform group-hover:rotate-45">
+                <i data-lucide="arrow-up-right" class="h-5 w-5"></i>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Project 2: Viro -->
+        <div class="reveal">
+          <a href="https://apps.apple.com/sa/app/viro/id6771511279" target="_blank" rel="noopener noreferrer" class="glass group relative block aspect-[4/3] overflow-hidden rounded-3xl transition hover:scale-[1.01]">
+            <div class="absolute inset-0 bg-gradient-to-br from-cyan-400/30 to-indigo-500/20"></div>
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), transparent 50%);"></div>
+
+            <div class="absolute start-6 top-6 text-xs uppercase tracking-widest text-white/70" data-i18n="proj_viro_tag">تطبيقات جوال</div>
+
+            <div class="glass-strong absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-2xl p-2 shadow-2xl transition-transform duration-500 group-hover:scale-110 sm:h-36 sm:w-36">
+              <img src="assets/viro.jpeg" alt="Viro" class="h-full w-full rounded-xl object-cover">
+            </div>
+
+            <div class="absolute bottom-6 start-6 end-6 flex items-end justify-between">
+              <h3 class="text-3xl font-semibold drop-shadow-md md:text-4xl" data-i18n="proj_viro_name">فيرو</h3>
+              <div class="glass-strong flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-transform group-hover:rotate-45">
+                <i data-lucide="arrow-up-right" class="h-5 w-5"></i>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK SECTION -->
+  <section id="stack" class="relative px-6 py-32">
+    <div class="mx-auto max-w-6xl">
+      <div class="reveal mb-12 text-center">
+        <div class="mb-3 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="stack_kicker">التقنيات التي نستخدمها</div>
+        <h2 class="text-4xl font-semibold md:text-5xl" data-i18n="stack_title">دائماً نستخدم أحدث التقنيات.</h2>
+      </div>
+
+      <div class="reveal">
+        <p class="mx-auto max-w-2xl text-center text-lg leading-relaxed text-white/70" data-i18n="stack_desc">
+          نستخدم أحدث التقنيات وأفضل أطر العمل لضمان تطبيقات سريعة، آمنة، وقابلة للتوسع بكفاءة عالية وبدون الدخول في تفاصيل معقدة.
         </p>
+      </div>
+    </div>
+  </section>
 
-        <!-- Director Action Bar -->
-        <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
-          <button id="hero-film-btn" class="px-8 py-4 rounded-full text-base font-bold bg-white text-black hover:bg-slate-200 transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 group">
-            <span data-i18n="hero_cta_film">بدء الفيلم التفاعلي 🎬</span>
-          </button>
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="relative px-6 py-32">
+    <div class="mx-auto max-w-4xl text-center">
+      <div class="reveal">
+        <div class="mb-4 text-xs uppercase tracking-[0.3em] text-indigo-300/70" data-i18n="contact_kicker">تواصل</div>
+        <h2 class="text-5xl font-semibold leading-[0.95] tracking-tight md:text-7xl">
+          <span data-i18n="contact_title_1">لنبني شيئاً</span><br>
+          <span class="text-gradient" data-i18n="contact_title_2">لا يُنسى.</span>
+        </h2>
+      </div>
 
-          <a href="#section-theater" class="px-8 py-4 rounded-full text-base font-bold bg-white/5 hover:bg-white/10 border border-white/20 text-white transition-all transform hover:scale-105 flex items-center gap-3">
-            <span data-i18n="hero_cta_explore">تصفح المسرح التقني ⚡</span>
+      <div class="reveal mx-auto mt-12 flex max-w-2xl flex-col justify-center gap-4 sm:flex-row">
+        <a href="https://wa.me/966504267480" target="_blank" rel="noopener noreferrer" class="glass-strong flex items-center justify-center gap-3 rounded-xl px-8 py-4 font-medium transition hover:bg-white/10">
+          <i data-lucide="message-circle" class="h-5 w-5 text-green-400"></i>
+          <span dir="ltr">+966 50 426 7480</span>
+        </a>
+
+        <a href="mailto:contact@russokh.com" class="flex items-center justify-center gap-3 rounded-xl bg-white px-8 py-4 font-medium text-[#0b0b2a] transition hover:bg-white/90">
+          <i data-lucide="mail" class="h-5 w-5"></i>
+          <span>contact@russokh.com</span>
+        </a>
+      </div>
+
+      <div class="reveal mt-10 flex flex-wrap justify-center gap-6 text-sm text-white/60">
+        <span class="flex items-center gap-2">
+          <i data-lucide="map-pin" class="h-4 w-4"></i>
+          <span data-i18n="contact_location">المدينة المنورة · عن بُعد</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="relative px-6 pb-10 pt-20">
+    <div class="mx-auto max-w-7xl">
+      <div class="reveal">
+        <div class="text-gradient select-none pb-6 font-display text-[clamp(3rem,14vw,11rem)] font-semibold leading-tight tracking-tighter" data-i18n="brand_name">
+          رسوخ
+        </div>
+      </div>
+
+      <div class="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-white/50">
+        <div class="flex items-center gap-2.5">
+          <img src="assets/rusookh-logo.jpeg" alt="Rusookh" class="h-7 w-7 rounded-md object-cover">
+          <span>
+            © 2026 <span data-i18n="brand_name_camel">رسوخ</span>. <span data-i18n="rights">جميع الحقوق محفوظة.</span>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <a href="https://www.linkedin.com/in/omar-bedaiwi-109964400" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="transition hover:text-white">
+            <i data-lucide="linkedin" class="h-4 w-4"></i>
           </a>
         </div>
-
-        <!-- Studio Real-time Telemetry Metrics -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-12 max-w-3xl mx-auto">
-          <div class="glass-panel p-5 rounded-2xl border border-white/5 interactive-tilt">
-            <div class="text-3xl font-black font-mono text-cyan-400">99.99%</div>
-            <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider" data-i18n="hero_metrics_uptime">جاهزية الأنظمة</div>
-            <div class="specular-glare"></div>
-          </div>
-          <div class="glass-panel p-5 rounded-2xl border border-white/5 interactive-tilt">
-            <div class="text-3xl font-black font-mono text-emerald-400">+500,000</div>
-            <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider" data-i18n="hero_metrics_users">مستخدم حول العالم</div>
-            <div class="specular-glare"></div>
-          </div>
-          <div class="glass-panel p-5 rounded-2xl border border-white/5 interactive-tilt">
-            <div class="text-3xl font-black font-mono text-amber-400">&lt; 45ms</div>
-            <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider" data-i18n="hero_metrics_latency">زمن استجابة المنصات</div>
-            <div class="specular-glare"></div>
-          </div>
-        </div>
-
       </div>
-    </section>
+    </div>
+  </footer>
 
-    <!-- ==================== ACT II: THE 3D CARD THEATER ==================== -->
-    <section id="section-theater" class="py-24 px-6 relative border-t border-white/5">
-      <div class="max-w-7xl mx-auto">
-        
-        <!-- Header -->
-        <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <div class="neon-pill" data-i18n="theater_kicker">الفصل الأول · مسرح القدرات التفاعلي</div>
-          <h2 class="text-3xl sm:text-5xl font-black text-white" data-i18n="theater_title">قدرات هندسية مصممة للسيطرة على المستقبل</h2>
-          <p class="text-slate-400 text-sm sm:text-base" data-i18n="theater_desc">تفاعل مع بطاقات المسرح ثلاثي الأبعاد لاستكشاف عمق تخصصات رسوخ. استمتع بزوايا الإضاءة والعمق البصري الحقيقي.</p>
-        </div>
-
-        <!-- 3D Perspective Coverflow Stage -->
-        <div class="theater-stage-container">
-          <div class="theater-carousel-track" id="theater-track">
-            
-            <!-- Card 01: Native Mobile -->
-            <div class="theater-card interactive-tilt p-8 flex flex-col justify-between" data-index="0">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-mono font-bold text-cyan-400 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20" data-i18n="card_1_tag">Native Excellence</span>
-                <span class="text-3xl font-black font-mono text-white/20">01</span>
-              </div>
-              <div class="space-y-4 my-auto">
-                <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-3xl shadow-[0_0_20px_rgba(0,242,254,0.2)]">
-                  <i class="fa-solid fa-mobile-screen"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white leading-tight" data-i18n="card_1_title">تطبيقات جوال بمعدل 120fps</h3>
-                <p class="text-sm text-slate-300 leading-relaxed font-light" data-i18n="card_1_desc">بناء تطبيقات iOS و Android استثنائية بلغات Swift و Kotlin و Flutter مع بنية Offline-First، وتكاملات عتادية عميقة وحماية بيومترية متقدمة.</p>
-              </div>
-              <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-cyan-400">
-                <span data-i18n="card_1_stat">120 FPS Buttery Smooth</span>
-                <i class="fa-solid fa-bolt"></i>
-              </div>
-              <div class="specular-glare"></div>
-            </div>
-
-            <!-- Card 02: Edge Web -->
-            <div class="theater-card interactive-tilt p-8 flex flex-col justify-between" data-index="1">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-mono font-bold text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20" data-i18n="card_2_tag">Edge Systems</span>
-                <span class="text-3xl font-black font-mono text-white/20">02</span>
-              </div>
-              <div class="space-y-4 my-auto">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-3xl shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                  <i class="fa-solid fa-globe"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white leading-tight" data-i18n="card_2_title">منصات ويب فائقة السرعة</h3>
-                <p class="text-sm text-slate-300 leading-relaxed font-light" data-i18n="card_2_desc">معماريات موزعة مبنية على بيئات Edge الحافة (V8 Isolates)، مع تحميل فوري في أقل من 50 مللي ثانية ودعم كامل لتزامن البيانات اللحظي عبر WebSockets.</p>
-              </div>
-              <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-emerald-400">
-                <span data-i18n="card_2_stat">&lt; 50ms Edge TTFB</span>
-                <i class="fa-solid fa-network-wired"></i>
-              </div>
-              <div class="specular-glare"></div>
-            </div>
-
-            <!-- Card 03: Neural AI Core -->
-            <div class="theater-card interactive-tilt p-8 flex flex-col justify-between" data-index="2">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-mono font-bold text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20" data-i18n="card_3_tag">Neural Intelligence</span>
-                <span class="text-3xl font-black font-mono text-white/20">03</span>
-              </div>
-              <div class="space-y-4 my-auto">
-                <div class="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-3xl shadow-[0_0_20px_rgba(121,40,202,0.2)]">
-                  <i class="fa-solid fa-brain"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white leading-tight" data-i18n="card_3_title">أتمتة ذكية ووكلاء ذكاء اصطناعي</h3>
-                <p class="text-sm text-slate-300 leading-relaxed font-light" data-i18n="card_3_desc">تصميم وتنفيذ وكلاء ذكاء اصطناعي ذاتيي الحركة (Agentic AI Systems) مع قواعد بيانات شعاعية (Vector DBs) وخطوط معالجة عصبية ترفع إنتاجية الأعمال بمقدار 10x.</p>
-              </div>
-              <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-purple-400">
-                <span data-i18n="card_3_stat">Autonomous Agentic Pipelines</span>
-                <i class="fa-solid fa-microchip"></i>
-              </div>
-              <div class="specular-glare"></div>
-            </div>
-
-            <!-- Card 04: High-Load Commerce -->
-            <div class="theater-card interactive-tilt p-8 flex flex-col justify-between" data-index="3">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-mono font-bold text-amber-400 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20" data-i18n="card_4_tag">High-Load Commerce</span>
-                <span class="text-3xl font-black font-mono text-white/20">04</span>
-              </div>
-              <div class="space-y-4 my-auto">
-                <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-3xl shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-                  <i class="fa-solid fa-cart-shopping"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white leading-tight" data-i18n="card_4_title">بوابات ومتاجر إلكترونية عالية الحمل</h3>
-                <p class="text-sm text-slate-300 leading-relaxed font-light" data-i18n="card_4_desc">منظومات تجارة رقمية تتحمل ملايين الزيارات التزامنية في حملات التخفيضات الكبرى، مع ربط بوابات دفع بنكية ومعالجة طلبات فائقة الأمان.</p>
-              </div>
-              <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-amber-400">
-                <span data-i18n="card_4_stat">Zero-Downtime Peak Traffic</span>
-                <i class="fa-solid fa-shield-halved"></i>
-              </div>
-              <div class="specular-glare"></div>
-            </div>
-
-            <!-- Card 05: Spatial UX/UI -->
-            <div class="theater-card interactive-tilt p-8 flex flex-col justify-between" data-index="4">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-mono font-bold text-pink-400 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20" data-i18n="card_5_tag">Spatial UX/UI</span>
-                <span class="text-3xl font-black font-mono text-white/20">05</span>
-              </div>
-              <div class="space-y-4 my-auto">
-                <div class="w-16 h-16 rounded-2xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 text-3xl shadow-[0_0_20px_rgba(236,72,153,0.2)]">
-                  <i class="fa-solid fa-cubes"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white leading-tight" data-i18n="card_5_title">تصميم وتجارب استخدام سينمائية</h3>
-                <p class="text-sm text-slate-300 leading-relaxed font-light" data-i18n="card_5_desc">واجهات مستخدم تبتعد تماماً عن القوالب الجاهزة وتستعير لغة السينما والإضاءة الحجمية لترك انطباع لا يُمحى لدى المستخدم والعميل.</p>
-              </div>
-              <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-pink-400">
-                <span data-i18n="card_5_stat">Bespoke Design Engineering</span>
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-              </div>
-              <div class="specular-glare"></div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Theater Navigation Bar & Counter -->
-        <div class="flex items-center justify-between max-w-md mx-auto mt-8 px-4">
-          <button id="theater-prev-btn" class="w-12 h-12 rounded-full glass-panel hover:bg-white/10 flex items-center justify-center text-white text-lg transition-transform hover:scale-110 active:scale-95">
-            <i class="fa-solid fa-arrow-right ltr:rotate-180"></i>
-          </button>
-
-          <div class="flex flex-col items-center">
-            <div id="theater-active-counter" class="font-mono text-sm font-bold text-cyan-400 tracking-widest">03 / 05</div>
-            <div class="text-[11px] text-slate-400 font-mono mt-1" data-i18n="theater_hint">اسحب البطاقات أو استخدم الأسهم للتنقل ثلاثي الأبعاد</div>
-          </div>
-
-          <button id="theater-next-btn" class="w-12 h-12 rounded-full glass-panel hover:bg-white/10 flex items-center justify-center text-white text-lg transition-transform hover:scale-110 active:scale-95">
-            <i class="fa-solid fa-arrow-left ltr:rotate-180"></i>
-          </button>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ==================== ACT III: ARCHITECTURE REACTOR ==================== -->
-    <section id="section-architecture" class="py-24 px-6 relative border-t border-white/5 bg-slate-950/40">
-      <div class="max-w-7xl mx-auto space-y-12">
-        
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div class="space-y-3 max-w-2xl">
-            <div class="neon-pill" data-i18n="arch_kicker">الفصل الثاني · المحاكي المعماري التفاعلي</div>
-            <h2 class="text-3xl sm:text-4xl font-black text-white" data-i18n="arch_title">قلب المنظومة: كيف تجري البيانات داخل أنظمة رسوخ؟</h2>
-            <p class="text-slate-400 text-sm sm:text-base" data-i18n="arch_desc">اضغط على زر إطلاق حزمة البيانات لمشاهدة دورة حياة الطلب عبر طبقات البنية التحتية، من الحافة حتى قواعد البيانات المشفرة.</p>
-          </div>
-
-          <div class="flex items-center gap-4">
-            <button id="arch-inject-btn" class="px-6 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-black shadow-lg shadow-cyan-500/20 transition-all transform hover:scale-105 flex items-center gap-2">
-              <span data-i18n="arch_btn_pulse">إطلاق حزمة بيانات تجريبية ⚡</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Reactor Canvas Stage -->
-        <div class="glass-panel p-6 rounded-3xl border border-white/10 relative overflow-hidden shadow-2xl">
-          <canvas id="arch-canvas" class="w-full h-80 sm:h-96 block"></canvas>
-
-          <!-- Interactive Telemetry Terminal Bar -->
-          <div class="mt-4 p-4 rounded-xl bg-black/60 border border-white/10 flex items-center justify-between font-mono text-xs text-slate-300">
-            <div id="arch-terminal-log" class="truncate flex items-center gap-2">
-              <span class="text-emerald-400 font-bold">[TELEMETRY]</span>
-              <span data-i18n="arch_log_ready">النظام في وضع الاستعداد. اضغط على الزر لإرسال نبضة بيانات.</span>
-            </div>
-            <div class="hidden sm:flex items-center gap-4 text-slate-400 text-[11px]">
-              <span>AES-256-GCM</span>
-              <span class="text-emerald-400 font-bold">HEALTH: 100%</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ==================== ACT IV: FLAGSHIP WORKS REEL ==================== -->
-    <section id="section-works" class="py-24 px-6 relative border-t border-white/5">
-      <div class="max-w-7xl mx-auto space-y-16">
-        
-        <div class="text-center max-w-3xl mx-auto space-y-3">
-          <div class="neon-pill" data-i18n="works_kicker">الفصل الثالث · استعراض المشاريع الواقعية</div>
-          <h2 class="text-3xl sm:text-5xl font-black text-white" data-i18n="works_title">منتجات حقيقية في السوق أثبتت صلابتها</h2>
-          <p class="text-slate-400 text-sm sm:text-base" data-i18n="works_desc">نماذج من الأنظمة والتطبيقات التي تم ابتكارها وهندستها وتغذيتها بأرقى معايير الجودة.</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          
-          <!-- Project 01: Rebalance -->
-          <div class="glass-panel rounded-3xl border border-white/10 overflow-hidden interactive-tilt group">
-            <div class="relative h-72 overflow-hidden bg-slate-900">
-              <img src="assets/rebalance.jpg" alt="Rebalance Application" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-              <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
-                <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-black/60 backdrop-blur border border-white/20 text-cyan-400" data-i18n="proj_rebalance_badge">شهد إطلاقاً ناجحاً ومعدلات استبقاء قياسية</span>
-                <span class="text-xs font-mono text-slate-400">iOS / Android</span>
-              </div>
-            </div>
-            <div class="p-8 space-y-4">
-              <div class="text-xs font-mono text-cyan-400" data-i18n="proj_rebalance_cat">منظومة الصحة واللياقة الذكية المخصصة</div>
-              <h3 class="text-2xl font-black text-white" data-i18n="proj_rebalance_name">ريبالانس (Rebalance)</h3>
-              <p class="text-slate-300 text-sm leading-relaxed font-light" data-i18n="proj_rebalance_desc">تطبيق جوال ونظام سحابي متكامل لإدارة الجداول الغذائية والتمارين المدعومة بالذكاء الاصطناعي مع قياس مؤشرات الجسم الحيوية ومزامنة الأجهزة القابلة للارتداء.</p>
-              
-              <ul class="space-y-2 text-xs text-slate-400 pt-2 border-t border-white/10">
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> <span data-i18n="proj_rebalance_f1">محرك توصيات تغذية مخصص مدعوم بالذكاء الاصطناعي</span></li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> <span data-i18n="proj_rebalance_f2">تزامن فوري مع الساعات الذكية ومقاييس الصحة</span></li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> <span data-i18n="proj_rebalance_f3">واجهة استخدام فائقة النعومة وتفاعلات حركية متقنة</span></li>
-              </ul>
-            </div>
-            <div class="specular-glare"></div>
-          </div>
-
-          <!-- Project 02: Viro -->
-          <div class="glass-panel rounded-3xl border border-white/10 overflow-hidden interactive-tilt group">
-            <div class="relative h-72 overflow-hidden bg-slate-900">
-              <img src="assets/viro.jpeg" alt="Viro Logistics Engine" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700">
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
-              <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
-                <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-black/60 backdrop-blur border border-white/20 text-emerald-400" data-i18n="proj_viro_badge">بنية تحتية تتحمل آلاف الطلبات المتزامنة</span>
-                <span class="text-xs font-mono text-slate-400">Mobile / Edge Cloud</span>
-              </div>
-            </div>
-            <div class="p-8 space-y-4">
-              <div class="text-xs font-mono text-emerald-400" data-i18n="proj_viro_cat">منصة التوصيل والتجارة اللحظية الذكية</div>
-              <h3 class="text-2xl font-black text-white" data-i18n="proj_viro_name">فايرو (Viro)</h3>
-              <p class="text-slate-300 text-sm leading-relaxed font-light" data-i18n="proj_viro_desc">منظومة تقنية متكاملة لربط المتاجر والمناديب والعملاء بتتبع جغرافي لحظي فائق الدقة وخوارزميات ذكية لتوزيع الطلبات وتقليل زمن التوصيل بنسبة 35%.</p>
-              
-              <ul class="space-y-2 text-xs text-slate-400 pt-2 border-t border-white/10">
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span data-i18n="proj_viro_f1">تتبع مسارات فوري بالثانية عبر WebSockets</span></li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span data-i18n="proj_viro_f2">خوارزمية توزيع ذكية للطلبات استناداً إلى الكثافة</span></li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <span data-i18n="proj_viro_f3">بوابة دفع متكاملة ونظام محاسبي مؤتمت بالكامل</span></li>
-              </ul>
-            </div>
-            <div class="specular-glare"></div>
-          </div>
-
-        </div>
-
-        <!-- Project 03 Feature Banner: Rusookh Core AI Engine -->
-        <div class="glass-panel rounded-3xl p-8 sm:p-12 border border-white/10 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden interactive-tilt">
-          <div class="space-y-4 max-w-2xl relative z-10">
-            <span class="text-xs font-mono font-bold text-purple-400 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20" data-i18n="proj_enterprise_badge">معمارية معيارية مشفرة بالكامل</span>
-            <h3 class="text-3xl font-black text-white" data-i18n="proj_enterprise_name">نواة رسوخ السحابية (Rusookh Core)</h3>
-            <p class="text-slate-300 text-sm leading-relaxed font-light" data-i18n="proj_enterprise_desc">محرك داخلي مصمم للمنشآت لتشغيل الوكلاء البرمجية وتكامل الـ ERP وربط سير العمليات بأمان بنكي دون الاعتماد على خدمات خارجية معقدة.</p>
-            
-            <div class="flex flex-wrap gap-3 pt-2 text-xs font-mono text-slate-300">
-              <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">🧠 Multi-Agent Swarms</span>
-              <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">🔒 On-Premise Vector Store</span>
-              <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">⚡ High-Frequency Telemetry</span>
-            </div>
-          </div>
-
-          <div class="relative z-10 flex-shrink-0">
-            <a href="#section-contact" class="px-8 py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white shadow-xl shadow-purple-500/20 transition-all transform hover:scale-105 inline-flex items-center gap-3">
-              <span data-i18n="nav_contact">إطلاق مشروع</span>
-              <i class="fa-solid fa-arrow-left ltr:rotate-180"></i>
-            </a>
-          </div>
-          <div class="specular-glare"></div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ==================== ACT V: THE BUILDERS COLLECTIVE & TERMINAL ==================== -->
-    <section id="section-collective" class="py-24 px-6 relative border-t border-white/5 bg-slate-950/60">
-      <div class="max-w-7xl mx-auto space-y-12">
-        
-        <div class="text-center max-w-3xl mx-auto space-y-3">
-          <div class="neon-pill" data-i18n="team_kicker">الفصل الرابع · الفلسفة وفريق العمل</div>
-          <h2 class="text-3xl sm:text-5xl font-black text-white" data-i18n="team_title">مهندسون وبنّاؤون.. شغف بالكمال الرقمي</h2>
-          <p class="text-slate-400 text-sm sm:text-base" data-i18n="team_desc">خلف كل سطر برمجي في رسوخ يقف فريق ومؤسس يعشقون الأداء الخالص، الجمال البصري، والصلابة المعمارية.</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          <!-- Founder Card -->
-          <div class="lg:col-span-5 glass-panel p-8 rounded-3xl border border-white/10 space-y-6 interactive-tilt">
-            <div class="flex items-center gap-5">
-              <img src="assets/rusookh-logo.jpeg" alt="Omar Hisham" class="w-20 h-20 rounded-2xl border-2 border-cyan-400/40 shadow-xl object-cover">
-              <div>
-                <h4 class="text-2xl font-black text-white" data-i18n="founder_name">عمر هشام</h4>
-                <p class="text-xs font-mono text-cyan-400 mt-1" data-i18n="founder_role">المؤسس والمهندس البرمجي الرئيسي</p>
-                <div class="flex items-center gap-3 mt-3 text-slate-400 text-sm">
-                  <a href="https://github.com/omar-hisham26" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-github"></i></a>
-                  <a href="https://linkedin.com" target="_blank" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-linkedin"></i></a>
-                  <a href="mailto:contact@russokh.com" class="hover:text-cyan-400 transition-colors"><i class="fa-solid fa-envelope"></i></a>
-                </div>
-              </div>
-            </div>
-
-            <blockquote class="text-sm text-slate-300 italic border-l-2 border-cyan-400/60 pl-4 py-1 leading-relaxed font-light" data-i18n="founder_quote">
-              «البرمجيات الحقيقية لا تُصنع كواجب، بل تُنحت كفيلم ملحمي يترك بصمة لا تنسى في كل بكسل وكل استدعاء دالة.»
-            </blockquote>
-
-            <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
-              <span class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Al Madinah Al Munawwarah, KSA</span>
-              </span>
-              <span class="font-mono text-cyan-400">ENGINEER · BUILDER</span>
-            </div>
-            <div class="specular-glare"></div>
-          </div>
-
-          <!-- Interactive Kernel Terminal -->
-          <div class="lg:col-span-7 glass-panel rounded-3xl border border-white/15 overflow-hidden shadow-2xl flex flex-col h-[460px]">
-            <!-- Terminal Header -->
-            <div class="bg-black/80 px-6 py-3.5 border-b border-white/10 flex items-center justify-between select-none">
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
-                <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
-                <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-                <span class="text-xs font-mono text-slate-400 mr-2 ltr:ml-2" data-i18n="terminal_title">RUSOOKH KERNEL CONSOLE v3.15</span>
-              </div>
-              <div class="text-[11px] font-mono text-cyan-400">ONLINE · TTY1</div>
-            </div>
-
-            <!-- Terminal Output Buffer -->
-            <div id="terminal-output" class="p-6 flex-grow overflow-y-auto space-y-2 text-xs font-mono text-slate-300">
-              <div class="text-slate-400">Welcome to Rusookh Interactive Studio Terminal. Type <span class="text-amber-400 font-bold">help</span> or click preset commands below:</div>
-            </div>
-
-            <!-- Preset Command Pills -->
-            <div class="px-6 py-2.5 bg-black/40 border-t border-white/5 flex flex-wrap items-center gap-2">
-              <button onclick="window.runTerminalCommand('stack')" class="px-3 py-1 rounded-full text-[11px] font-mono bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all" data-i18n="terminal_btn_stack">عرض حزمة التقنيات (stack)</button>
-              <button onclick="window.runTerminalCommand('philosophy')" class="px-3 py-1 rounded-full text-[11px] font-mono bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all" data-i18n="terminal_btn_philosophy">فلسفة رسوخ (philosophy)</button>
-              <button onclick="window.runTerminalCommand('contact')" class="px-3 py-1 rounded-full text-[11px] font-mono bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all" data-i18n="terminal_btn_contact">تواصل مباشر (contact)</button>
-            </div>
-
-            <!-- Terminal Input Row -->
-            <div class="bg-black/90 px-6 py-3 border-t border-white/10 flex items-center gap-3">
-              <span class="text-emerald-400 font-mono text-sm font-bold">rusookh@core:~$</span>
-              <input id="terminal-input" type="text" placeholder="type 'help', 'stack', 'projects'..." class="bg-transparent border-none outline-none font-mono text-xs text-white flex-grow focus:ring-0">
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ==================== ACT VI: DIRECT CONTACT TELEPORT ==================== -->
-    <section id="section-contact" class="py-24 px-6 relative border-t border-white/5">
-      <div class="max-w-4xl mx-auto glass-panel p-8 sm:p-14 rounded-3xl border border-white/15 text-center space-y-8 relative overflow-hidden interactive-tilt">
-        
-        <div class="neon-pill" data-i18n="contact_kicker">الفصل الختامي · خطوتك القادمة</div>
-        <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight" data-i18n="contact_title">هل أنت مستعد لنقل مشروعك إلى مصاف الكبار؟</h2>
-        <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto font-light leading-relaxed" data-i18n="contact_desc">سواء كنت تؤسس لشركة ناشئة طموحة أو ترغب في إعادة بناء منظومتك الرقمية بمعايير سينمائية لا تقبل المنافسة، فريق رسوخ مستعد للحديث معك الآن.</p>
-
-        <!-- Direct Channels -->
-        <div class="flex flex-wrap items-center justify-center gap-5 pt-4">
-          <!-- WhatsApp Link -->
-          <a href="https://wa.me/966567848419" target="_blank" class="px-8 py-4 rounded-2xl font-bold text-sm bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black shadow-xl shadow-emerald-500/20 transition-all transform hover:scale-105 flex items-center gap-3">
-            <i class="fa-brands fa-whatsapp text-xl"></i>
-            <span data-i18n="contact_whatsapp">محادثة واتساب فورية</span>
-          </a>
-
-          <!-- Email Link -->
-          <a href="mailto:contact@russokh.com" class="px-8 py-4 rounded-2xl font-bold text-sm bg-white/5 hover:bg-white/10 border border-white/20 text-white transition-all transform hover:scale-105 flex items-center gap-3">
-            <i class="fa-solid fa-envelope text-lg text-cyan-400"></i>
-            <span data-i18n="contact_email">إرسال بريد إلكتروني</span>
-          </a>
-        </div>
-
-        <div class="pt-10 border-t border-white/10 text-xs text-slate-400 space-y-2">
-          <p><i class="fa-solid fa-location-dot text-cyan-400 mr-2 ltr:ml-2"></i> <span data-i18n="contact_location_val">المدينة المنورة، المملكة العربية السعودية · نخدم العالم</span></p>
-          <p data-i18n="contact_rights">جميع الحقوق محفوظة © 2026 استوديو رسوخ للبرمجيات.</p>
-        </div>
-
-        <div class="specular-glare"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ==================== SCRIPTS ==================== -->
-  <script src="js/sound-engine.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/architecture-simulator.js"></script>
-  <script src="js/cinematic-stage.js"></script>
-
-  <script>
-    // Master Bootstrap on DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', () => {
-      // 1. Initialize Localization
-      window.i18n.init();
-
-      // 2. Initialize Stage & 3D Coverflow & Starfield
-      window.cinematicStage.init();
-
-      // 3. Initialize Architecture Reactor Simulator
-      window.archSim.init('arch-canvas');
-
-      // 4. Bind Sound & Film HUD buttons
-      const soundBtn = document.getElementById('sound-toggle-btn');
-      if (soundBtn) {
-        soundBtn.addEventListener('click', () => {
-          const isLive = window.sound.toggleMute();
-          soundBtn.innerHTML = isLive
-            ? `<span>🔊</span> <span data-i18n="sound_on">${window.i18n.t('sound_on')}</span>`
-            : `<span>🔇</span> <span data-i18n="sound_off">${window.i18n.t('sound_off')}</span>`;
-        });
-      }
-
-      const filmBtn = document.getElementById('film-mode-toggle-btn');
-      if (filmBtn) {
-        filmBtn.addEventListener('click', () => {
-          window.cinematicStage.toggleFilmMode();
-        });
-      }
-
-      const heroFilmBtn = document.getElementById('hero-film-btn');
-      if (heroFilmBtn) {
-        heroFilmBtn.addEventListener('click', () => {
-          window.cinematicStage.toggleFilmMode();
-        });
-      }
-
-      const langBtn = document.getElementById('lang-toggle-btn');
-      if (langBtn) {
-        langBtn.addEventListener('click', () => {
-          window.i18n.toggleLang();
-        });
-      }
-
-      const archPulseBtn = document.getElementById('arch-inject-btn');
-      if (archPulseBtn) {
-        archPulseBtn.addEventListener('click', () => {
-          window.archSim.injectPacket();
-        });
-      }
-
-      // Universal click acoustic feedback for interactive buttons & links
-      document.querySelectorAll('button, a').forEach(el => {
-        el.addEventListener('pointerenter', () => {
-          if (window.sound) window.sound.click(0.15);
-        });
-      });
-    });
-  </script>
+  <!-- Application Logic -->
+  <script src="js/app.js"></script>
 </body>
 </html>
