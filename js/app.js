@@ -119,6 +119,10 @@ function setLanguage(lang) {
   if (prefixEl) {
     prefixEl.textContent = t.hero_title_1[lang];
   }
+
+  if (typeof renderProjects === "function") {
+    renderProjects(lang);
+  }
 }
 
 // --- 2. EXACT CURSOR GLOW ---
@@ -158,6 +162,58 @@ const revealObserver = new IntersectionObserver(
 );
 
 document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
+
+// --- 4. DYNAMIC PROJECTS RENDERING ---
+function renderProjects(lang = currentLang) {
+  const container = document.getElementById("projects-grid");
+  if (!container || typeof projects === "undefined" || !Array.isArray(projects)) return;
+
+  container.innerHTML = projects.map((p) => {
+    const title = typeof p.title === "object" ? (p.title[lang] || p.title.ar || p.title.en || "") : (p.title || "");
+    const category = typeof p.category === "object" ? (p.category[lang] || p.category.ar || p.category.en || "") : (p.category || "");
+    const gradient = p.gradient || "from-indigo-500/30 to-fuchsia-500/20";
+    const link = p.link || "#";
+    const image = p.image || "";
+
+    return `
+      <div class="reveal">
+        <a href="${link}" target="_blank" rel="noopener noreferrer" class="glass group relative block aspect-[4/3] overflow-hidden rounded-3xl transition hover:scale-[1.01]">
+          <div class="absolute inset-0 bg-gradient-to-br ${gradient}"></div>
+          <div class="absolute inset-0" style="background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15), transparent 50%);"></div>
+
+          <div class="absolute start-6 top-6 text-xs uppercase tracking-widest text-white/70">
+            ${category}
+          </div>
+
+          <div class="glass-strong absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-2xl p-2 shadow-2xl transition-transform duration-500 group-hover:scale-110 sm:h-36 sm:w-36">
+            <img src="${image}" alt="${title}" class="h-full w-full rounded-xl object-cover">
+          </div>
+
+          <div class="absolute bottom-6 start-6 end-6 flex items-end justify-between">
+            <h3 class="text-3xl font-semibold drop-shadow-md md:text-4xl">${title}</h3>
+            <div class="glass-strong flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-transform group-hover:rotate-45">
+              <i data-lucide="arrow-up-right" class="h-5 w-5"></i>
+            </div>
+          </div>
+        </a>
+      </div>
+    `;
+  }).join("");
+
+  container.querySelectorAll(".reveal").forEach((el) => {
+    if (typeof revealObserver !== "undefined") {
+      revealObserver.observe(el);
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) {
+        el.classList.add("active");
+      }
+    }
+  });
+
+  if (typeof lucide !== "undefined") {
+    lucide.createIcons();
+  }
+}
 
 // --- 4. 1:1 EXACT THREE.JS ORB WITH DREI MESH-DISTORT SHADER & NIGHT HDRI ---
 function initOrb() {
